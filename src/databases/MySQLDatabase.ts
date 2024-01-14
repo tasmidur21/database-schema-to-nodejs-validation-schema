@@ -1,5 +1,6 @@
 import { createPool, Pool, PoolConnection, ConnectionConfig } from 'mysql2/promise';
 import { Database } from '../contacts/Database';
+import { errorMessage, successMessage } from '../config/messages';
 
 export class MySQLDatabase implements Database{
   private pool: Pool;
@@ -12,9 +13,9 @@ export class MySQLDatabase implements Database{
   async connect(): Promise<void> {
     try {
       this.connection = await this.pool.getConnection();
-      console.log('Connected to MySQL database');
+      console.log(successMessage('Connected to MySQL database'));
     } catch (error:any) {
-      console.error('Error connecting to MySQL database:', error.message);
+      console.error(errorMessage('Error connecting to MySQL database:'+error.message));
       throw error;
     }
   }
@@ -25,12 +26,12 @@ export class MySQLDatabase implements Database{
         const [rows, fields] = await this.connection.query(sql);
         return rows;
       } else {
-        console.error('Connection is not available.');
+        console.error(errorMessage('Connection is not available.'));
         // Handle the case where there's no valid connection
-        throw new Error('No valid connection available.');
+        throw new Error(errorMessage('No valid connection available.'));
       }
     } catch (error:any) {
-      console.error('Error executing query:', error.message);
+      console.error(errorMessage('Error executing query:'+error.message));
       throw error;
     }
   }
@@ -39,12 +40,12 @@ export class MySQLDatabase implements Database{
     try {
       if (this.connection) {
         this.connection.release();
-        console.log('Disconnected from MySQL database');
+        console.log(successMessage('Disconnected from MySQL database'));
       } else {
-        console.error('Connection is not available.');
+        console.error(errorMessage('Connection is not available.'));
       }
     } catch (error:any) {
-      console.error('Error disconnecting from MySQL database:', error.message);
+      console.error(errorMessage('Error disconnecting from MySQL database:'+error.message));
       throw error;
     }
   }

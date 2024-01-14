@@ -1,3 +1,4 @@
+import { errorMessage } from "../config/messages";
 import { ValidationSchema } from "../contacts/ValidationRule";
 
 export class SchemaOperationForSqlite {
@@ -6,6 +7,10 @@ export class SchemaOperationForSqlite {
     };
 
     public async getTableSchema(database: any, table: string): Promise<any[]> {
+          const tableExist=await database.query(`SELECT name FROM sqlite_master WHERE type='table' AND name='${table}';`)
+          if(!tableExist.length){
+            throw new Error(errorMessage(`The ${table} table is exist!`))
+          }
       return await database.query(`PRAGMA table_info('${table}')`)??[]
     }
 

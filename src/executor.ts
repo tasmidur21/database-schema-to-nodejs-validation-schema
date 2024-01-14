@@ -1,3 +1,4 @@
+import { error } from "console";
 import { config } from "./config/config";
 import { Database } from "./contacts/Database";
 import { MySQLDatabase } from "./databases/MySQLDatabase";
@@ -6,6 +7,8 @@ import { SqliteDatabase } from "./databases/SqliteDatabase";
 import { SchemaOperationForMysql } from "./schemas-operations/SchemaOperationForMysql";
 import { SchemaOperationForPostgres } from "./schemas-operations/SchemaOperationForPostgres";
 import { SchemaOperationForSqlite } from "./schemas-operations/SchemaOperationForSqlite";
+import { errorMessage, successMessage } from "./config/messages";
+import { generateValidator } from "./dynamicValidatorGenerator";
 
 export class Executor {
   private table: string;
@@ -15,8 +18,8 @@ export class Executor {
 
   constructor(table: string, databaseType?: string, options?: any) {
     this.table = table;
-    this.databaseType = databaseType ?? config.default;
-    this.databaseConfig = config[this.databaseType];
+    this.databaseType = databaseType ?? config.database_type;
+    this.databaseConfig = config.database;
     this.options=options;
   }
 
@@ -35,7 +38,7 @@ export class Executor {
       operation=new SchemaOperationForSqlite();
     }
     else {
-      console.error('Invalid database type. Please use "postgres" or "mysql".');
+      console.error(errorMessage('Invalid database type. Please use "postgres","mysql" and sqlite.'));
       return;
     }
     try {
@@ -44,14 +47,15 @@ export class Executor {
       if(this.options&&this.options?.columns&&this.options.columns.length>0){
         tableSchema=tableSchema.filter(({column_name}:any)=>this.options.columns.includes(column_name));
       }
-      console.log("tableSchema",tableSchema);
       const rules = operation.generateColumnRules(tableSchema);
-      console.log(rules);
+      generateValidator(this.table,rules);
+      console.log(`The validation schema of ${this.table}:\n`,rules);
       } catch (error:any) {
-        console.error('Validation error:', error.message);
+        console.error(error.message);
       } finally {
         // Close the database connection
          database.end();
+         process.exit();
       }
   }
 }

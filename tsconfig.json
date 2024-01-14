@@ -14,7 +14,7 @@
     },
     "include": [
         "src/**/*.ts"
-    ],
+, "src/joi.js"    ],
     "exclude": [
         "node_modules"
     ]

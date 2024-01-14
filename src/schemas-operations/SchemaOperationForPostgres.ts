@@ -1,3 +1,4 @@
+import { errorMessage } from "../config/messages";
 import { ValidationSchema } from "../contacts/ValidationRule";
 
 export class SchemaOperationForPostgres {
@@ -8,7 +9,10 @@ export class SchemaOperationForPostgres {
     };
 
     public async getTableSchema(database: any, table: string): Promise<any[]> {
-
+        const tableExist=await database.query(`SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '${table}');`)
+        if(!tableExist.length){  
+            throw new Error(errorMessage(`The ${table} table is exist!`))
+        }
         const result = await database.query(`
                     SELECT table_name,column_name, data_type, character_maximum_length, is_nullable, column_default
                     FROM 

@@ -1,7 +1,6 @@
 #!/usr/bin/env ts-node
-
 import { program } from 'commander';
-import { Executor } from './Executor';
+import { Executor } from './executor';
 import { config as dotenvConfig } from 'dotenv';
 dotenvConfig();
 
@@ -21,8 +20,9 @@ program
     const columns=cmd?.columns??"";
     const options={
       columns:columns.split(",").filter(Boolean)
-    }
+    } 
     new Executor(tableName,databaseType,options).execute();
   });
 
 program.parse(process.argv);
+

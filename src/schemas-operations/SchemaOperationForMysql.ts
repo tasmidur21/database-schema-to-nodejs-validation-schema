@@ -1,3 +1,4 @@
+import { errorMessage, warningMessage } from "../config/messages";
 import {ValidationSchema } from "../contacts/ValidationRule";
 
 export class SchemaOperationForMysql {
@@ -34,6 +35,10 @@ export class SchemaOperationForMysql {
     };
 
     public async getTableSchema(database: any,table:string): Promise<any[]> {
+          const tableExist=await database.query(`SHOW TABLES LIKE '${table}';`)
+          if(!tableExist.length){
+            throw new Error(warningMessage(`The ${table} table is not exist!`))
+          }
           return await database.query(`SHOW COLUMNS FROM ${table}`)??[];
     }
 
