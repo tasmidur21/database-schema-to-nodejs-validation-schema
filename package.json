@@ -1,6 +1,7 @@
 {
   "name": "@tasmidur/dynamic-validation-rules-from-db",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "private": false,
   "description": "Your project description",
   "bin": {
     "schema": "dist/cli.js"
@@ -20,6 +21,10 @@
     "dynamic-validation-rules-from-db"
   ],
   "author": "Md Tasmidur Rahman",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sonyzach/usfm-validator.git"
+  },
   "license": "MIT",
   "dependencies": {
     "chalk": "^5.3.0",

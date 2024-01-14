@@ -48,7 +48,7 @@ export class Executor {
         tableSchema=tableSchema.filter(({column_name}:any)=>this.options.columns.includes(column_name));
       }
       const rules = operation.generateColumnRules(tableSchema);
-      generateValidator(this.table,rules);
+      //generateValidator(this.table,rules);
       console.log(`The validation schema of ${this.table}:\n`,rules);
       } catch (error:any) {
         console.error(error.message);
