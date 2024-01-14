@@ -2,9 +2,12 @@
   "name": "your-project-name",
   "version": "1.0.0",
   "description": "Your project description",
-  "main": "dist/index.js",
+  "bin":{
+    "schema": "dist/cli.js"
+  },
+  "main": "dist/cli.js",
   "scripts": {
-    "start": "node dist/index.js",
+    "start": "node dist/cli.js",
     "build": "tsc -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

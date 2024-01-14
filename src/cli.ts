@@ -3,7 +3,6 @@
 import { program } from 'commander';
 import { Executor } from './Executor';
 import { config as dotenvConfig } from 'dotenv';
-import { Database } from './contacts/Database';
 dotenvConfig();
 
 program
@@ -11,7 +10,7 @@ program
   .description('A simple CLI created with Commander in TypeScript');
 
 program
-  .command('schema:gen')
+  .command('schema')
   .option('-db, --database <database>', 'Specify the database type as like mysql,postgres,sqlite')
   .option('-c, --columns <columns>', 'Specify the column name of the table')
   .requiredOption('-t, --table <table>', 'Specify the table name')
@@ -25,4 +24,5 @@ program
     }
     new Executor(tableName,databaseType,options).execute();
   });
+
 program.parse(process.argv);

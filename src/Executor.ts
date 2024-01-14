@@ -1,14 +1,11 @@
-import { log } from "console";
 import { config } from "./config/config";
 import { Database } from "./contacts/Database";
 import { MySQLDatabase } from "./databases/MySQLDatabase";
 import { PostgresDatabase } from "./databases/PostgresDatabase";
 import { SqliteDatabase } from "./databases/SqliteDatabase";
-import { SchemaOperation } from "./schemas-operations/SchemaOperation";
 import { SchemaOperationForMysql } from "./schemas-operations/SchemaOperationForMysql";
 import { SchemaOperationForPostgres } from "./schemas-operations/SchemaOperationForPostgres";
 import { SchemaOperationForSqlite } from "./schemas-operations/SchemaOperationForSqlite";
-
 
 export class Executor {
   private table: string;
@@ -24,8 +21,6 @@ export class Executor {
   }
 
   public async execute(): Promise<void> {
-    console.log(this.databaseConfig);
-
     let database: Database;
     let operation: any;
 
@@ -35,7 +30,7 @@ export class Executor {
     } else if (this.databaseType === 'mysql') {
       database = new MySQLDatabase(this.databaseConfig);
       operation=new SchemaOperationForMysql();
-    } else if (this.databaseType === 'mysql') {
+    } else if (this.databaseType === 'sqlite') {
       database = new SqliteDatabase(this.databaseConfig);
       operation=new SchemaOperationForSqlite();
     }
@@ -49,7 +44,7 @@ export class Executor {
       if(this.options&&this.options?.columns&&this.options.columns.length>0){
         tableSchema=tableSchema.filter(({column_name}:any)=>this.options.columns.includes(column_name));
       }
-      console.log(tableSchema);
+      console.log("tableSchema",tableSchema);
       const rules = operation.generateColumnRules(tableSchema);
       console.log(rules);
       } catch (error:any) {

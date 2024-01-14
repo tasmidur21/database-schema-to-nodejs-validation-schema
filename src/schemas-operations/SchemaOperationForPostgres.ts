@@ -1,4 +1,4 @@
-import {ValidationSchema } from "../contacts/ValidationRule";
+import { ValidationSchema } from "../contacts/ValidationRule";
 
 export class SchemaOperationForPostgres {
     public integerTypes: any = {
@@ -7,9 +7,9 @@ export class SchemaOperationForPostgres {
         bigint: { min: '-9223372036854775808', max: '9223372036854775807' },
     };
 
-    public async getTableSchema(database: any,table:string): Promise<any[]> {
-        try {
-            const result = await database.query(`
+    public async getTableSchema(database: any, table: string): Promise<any[]> {
+
+        const result = await database.query(`
                     SELECT table_name,column_name, data_type, character_maximum_length, is_nullable, column_default
                     FROM 
                     information_schema.columns
@@ -18,11 +18,8 @@ export class SchemaOperationForPostgres {
                     ORDER BY ordinal_position ASC;
         `);
 
-            return result.rows;
-        } catch (error) {
-            console.error('Error retrieving table schema:', error);
-            return [];
-        }
+        return result.rows ?? []
+
     }
 
     public generateColumnRules(tableSchema: any[]): ValidationSchema {
@@ -31,7 +28,8 @@ export class SchemaOperationForPostgres {
         const skipColumns: string[] = skipColumnValues.split(',');
 
         tableSchema.forEach(({ table_name, column_name, data_type, character_maximum_length, is_nullable, column_default }) => {
-            if (skipColumns.includes(column_name)) {
+
+            if (skipColumns.includes(column_name)||column_default.includes('nextval')) {
                 return;
             }
 
@@ -68,7 +66,7 @@ export class SchemaOperationForPostgres {
                     columnRules.push('json');
                     break;
                 default:
-                    // Handle other cases if needed
+                   // Skip for other type
                     break;
             }
             rules[column_name] = columnRules;
