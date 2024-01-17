@@ -25,7 +25,7 @@
   "author": "Md Tasmidur Rahman",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sonyzach/usfm-validator.git"
+    "url": "https://github.com/tasmidur21/nodejs-validation-schema-rules.git"
   },
   "license": "MIT",
   "dependencies": {
