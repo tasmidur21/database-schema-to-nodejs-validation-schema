@@ -1,15 +1,17 @@
 {
-  "name": "@tasmidur/dynamic-validation-rules-from-db",
+  "name": "@tasmidur/nodejs-validation-schema-rules",
   "version": "1.0.1",
   "private": false,
-  "description": "Your project description",
+  "description": "Automatically generate initial Node.js validation schema rules from your database table schema. Use them as a foundation for refining and optimizing your validation rules as required",
   "bin": {
-    "schema": "dist/cli.js"
+    "nodeVsr": "dist/cli.js"
   },
   "main": "dist/cli.js",
   "scripts": {
+    "clean": "rimraf dist/",
+    "copy-files": "copyfiles -u 1 src/**/*.hbs dist/",
     "start": "node dist/cli.js",
-    "build": "tsc",
+    "build": "yarn clean && tsc && yarn copy-files",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -38,6 +40,7 @@
   "devDependencies": {
     "@types/node": "^16.11.6",
     "@types/pg": "^8.10.9",
+    "copyfiles": "^2.4.1",
     "dotenv": "^16.3.1",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.5"

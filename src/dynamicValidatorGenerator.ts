@@ -2,7 +2,7 @@
 import * as fs from 'fs';
 import * as Handlebars from 'handlebars';
 import * as path from 'path';
-const validatorTemplateSource = fs.readFileSync('src/templates/validationTemplate.template.hbs', 'utf8');
+const validatorTemplateSource = fs.readFileSync(path.resolve(__dirname,'./templates/validationTemplate.template.hbs'), 'utf8');
 const template = Handlebars.compile(validatorTemplateSource);
 
 interface Rule {

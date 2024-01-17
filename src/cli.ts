@@ -9,7 +9,7 @@ program
   .description('A simple CLI created with Commander in TypeScript');
 
 program
-  .command('schema')
+  .command('make:schema')
   .option('-db, --database <database>', 'Specify the database type as like mysql,postgres,sqlite')
   .option('-c, --columns <columns>', 'Specify the column name of the table')
   .requiredOption('-t, --table <table>', 'Specify the table name')

@@ -31,7 +31,7 @@ coverage
 
 # Bower dependency directory (https://bower.io/)
 bower_components
-
+validators
 # node-waf configuration
 .lock-wscript
 
@@ -86,10 +86,6 @@ web_modules/
 # Next.js build output
 .next
 out
-
-# Nuxt.js build / generate output
-.nuxt
-dist
 
 # Gatsby files
 .cache/
