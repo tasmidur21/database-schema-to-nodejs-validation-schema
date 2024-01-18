@@ -1,4 +1,4 @@
-import { errorMessage } from "../config/messages";
+import { errorMessage } from "../utils/messages";
 import { ValidationSchema } from "../contacts/ValidationRule";
 
 export class SchemaOperationForPostgres {
@@ -26,14 +26,20 @@ export class SchemaOperationForPostgres {
 
     }
 
-    public generateColumnRules(tableSchema: any[]): ValidationSchema {
+    public generateColumnRules(dataTableSchema: any[],selectedColumns:string[],skipColumns:string[]): ValidationSchema {
+        
         const rules: ValidationSchema = {};
-        const skipColumnValues: any = process.env.SKIP_COLLUMNS ?? "";
-        const skipColumns: string[] = skipColumnValues.split(',');
+        let tableSchema=dataTableSchema;
 
+        if (skipColumns.length || selectedColumns.length) {
+            tableSchema = tableSchema.filter(({ column_name }) => {
+              return selectedColumns.length ? selectedColumns.includes(column_name):!skipColumns.includes(column_name);
+            });
+          }
+     
         tableSchema.forEach(({ table_name, column_name, data_type, character_maximum_length, is_nullable, column_default }) => {
 
-            if (skipColumns.includes(column_name)||column_default.includes('nextval')) {
+            if (column_default.includes('nextval')) {
                 return;
             }
 

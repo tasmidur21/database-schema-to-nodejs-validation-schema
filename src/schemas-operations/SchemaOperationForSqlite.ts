@@ -1,4 +1,4 @@
-import { errorMessage } from "../config/messages";
+import { errorMessage } from "../utils/messages";
 import { ValidationSchema } from "../contacts/ValidationRule";
 
 export class SchemaOperationForSqlite {
@@ -8,20 +8,29 @@ export class SchemaOperationForSqlite {
 
     public async getTableSchema(database: any, table: string): Promise<any[]> {
           const tableExist=await database.query(`SELECT name FROM sqlite_master WHERE type='table' AND name='${table}';`)
+          console.log(tableExist);
+          
           if(!tableExist.length){
-            throw new Error(errorMessage(`The ${table} table is exist!`))
+            throw new Error(errorMessage(`The ${table} table is not exist!`))
           }
+
       return await database.query(`PRAGMA table_info('${table}')`)??[]
     }
 
-    public generateColumnRules(tableSchema: any[]): ValidationSchema {
+    public generateColumnRules(dataTableSchema: any[],selectedColumns:string[],skipColumns:string[]): ValidationSchema {
+        
         const rules: ValidationSchema = {};
-        const skipColumnValues: any = process.env.SKIP_COLLUMNS ?? "";
-        const skipColumns: string[] = skipColumnValues.split(',');
+        let tableSchema=dataTableSchema;
+
+        if (skipColumns.length || selectedColumns.length) {
+            tableSchema = tableSchema.filter(({ name }) => {
+              return selectedColumns.length ?selectedColumns.includes(name):!skipColumns.includes(name);
+            });
+          }
 
         tableSchema.forEach(({ name, type, notnull, dflt_value, pk }) => {
 
-            if (skipColumns.includes(name) || Boolean(pk)) {
+            if (Boolean(pk)) {
                 return;
             }
 

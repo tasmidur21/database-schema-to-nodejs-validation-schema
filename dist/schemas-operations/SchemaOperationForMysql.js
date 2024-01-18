@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SchemaOperationForMysql = void 0;
-const messages_1 = require("../config/messages");
+const messages_1 = require("../utils/messages");
 class SchemaOperationForMysql {
     constructor() {
         this.integerTypes = {
@@ -54,13 +54,16 @@ class SchemaOperationForMysql {
             return (_a = yield database.query(`SHOW COLUMNS FROM ${table}`)) !== null && _a !== void 0 ? _a : [];
         });
     }
-    generateColumnRules(tableSchema) {
-        var _a;
+    generateColumnRules(dataTableSchema, selectedColumns, skipColumns) {
         const rules = {};
-        const skipColumnValues = (_a = process.env.SKIP_COLLUMNS) !== null && _a !== void 0 ? _a : "";
-        const skipColumns = skipColumnValues.split(',');
+        let tableSchema = dataTableSchema;
+        if (skipColumns.length || selectedColumns.length) {
+            tableSchema = tableSchema.filter(({ Field }) => {
+                return selectedColumns.length ? selectedColumns.includes(Field) : !skipColumns.includes(Field);
+            });
+        }
         tableSchema.forEach(({ Field, Type, Null, Key, Default, Extra }) => {
-            if (skipColumns.includes(Field) || Extra === 'auto_increment') {
+            if (Extra === 'auto_increment') {
                 return;
             }
             let columnRules = [];

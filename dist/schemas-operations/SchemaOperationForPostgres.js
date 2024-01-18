@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SchemaOperationForPostgres = void 0;
-const messages_1 = require("../config/messages");
+const messages_1 = require("../utils/messages");
 class SchemaOperationForPostgres {
     constructor() {
         this.integerTypes = {
@@ -37,14 +37,17 @@ class SchemaOperationForPostgres {
             return (_a = result.rows) !== null && _a !== void 0 ? _a : [];
         });
     }
-    generateColumnRules(tableSchema) {
-        var _a;
+    generateColumnRules(dataTableSchema, selectedColumns, skipColumns) {
         const rules = {};
-        const skipColumnValues = (_a = process.env.SKIP_COLLUMNS) !== null && _a !== void 0 ? _a : "";
-        const skipColumns = skipColumnValues.split(',');
+        let tableSchema = dataTableSchema;
+        if (skipColumns.length || selectedColumns.length) {
+            tableSchema = tableSchema.filter(({ column_name }) => {
+                return selectedColumns.length ? selectedColumns.includes(column_name) : !skipColumns.includes(column_name);
+            });
+        }
         tableSchema.forEach(({ table_name, column_name, data_type, character_maximum_length, is_nullable, column_default }) => {
             var _a;
-            if (skipColumns.includes(column_name) || column_default.includes('nextval')) {
+            if (column_default.includes('nextval')) {
                 return;
             }
             let columnRules = [];

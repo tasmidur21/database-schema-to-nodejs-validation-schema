@@ -26,12 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.config = void 0;
 const dotenv_1 = require("dotenv");
 const path = __importStar(require("path"));
+const validation_1 = require("../utils/validation");
 (0, dotenv_1.config)();
 const schemaConfig = require(path.join(process.cwd(), "/schema.config.js"));
-console.log(path.join(process.cwd(), "/schema.config.js"));
-const databaseType = schemaConfig.default;
-const database = schemaConfig[databaseType];
-exports.config = {
-    database_type: databaseType,
-    database: database
-};
+exports.config = (0, validation_1.validateConfig)(schemaConfig);

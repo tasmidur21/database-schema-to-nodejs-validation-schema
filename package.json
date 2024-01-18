@@ -1,6 +1,6 @@
 {
   "name": "@tasmidur/nodejs-validation-schema-rules",
-  "version": "1.0.2",
+  "version": "1.0.",
   "private": false,
   "description": "Automatically generate initial Node.js validation schema rules from your database table schema. Use them as a foundation for refining and optimizing your validation rules as required",
   "bin": {
@@ -11,6 +11,7 @@
     "clean": "rimraf dist/",
     "copy-files": "copyfiles -u 1 src/**/*.hbs dist/",
     "start": "node dist/cli.js",
+    "dev": "yarn build && node dist/cli.js",
     "build": "yarn clean && tsc && yarn copy-files",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -2,7 +2,7 @@
 import * as fs from 'fs';
 import * as Handlebars from 'handlebars';
 import * as path from 'path';
-const validatorTemplateSource = fs.readFileSync(path.resolve(__dirname,'./templates/validationTemplate.template.hbs'), 'utf8');
+const validatorTemplateSource = fs.readFileSync(path.resolve(__dirname,'../templates/validationTemplate.template.hbs'), 'utf8');
 const template = Handlebars.compile(validatorTemplateSource);
 
 interface Rule {
@@ -17,16 +17,24 @@ export function generateValidator(className: string, rules: Rule[]): void {
         className: formattedClassName,
         rules
     });
-    const validationBaseDir = path.join(process.cwd(), `/validators`);
-    // Check if the directory exists
-    if (!fs.existsSync(validationBaseDir)) {
-        // If not, create the directory
-        fs.mkdirSync(validationBaseDir);
+    adonisParse(rules);
+    // const validationBaseDir = path.join(process.cwd(), `/validators`);
+    // // Check if the directory exists
+    // if (!fs.existsSync(validationBaseDir)) {
+    //     // If not, create the directory
+    //     fs.mkdirSync(validationBaseDir);
 
-    } else {
-        console.log('Directory already exists.');
-    }
-    fs.writeFileSync(`${validationBaseDir}/${classNameCammelCase}.js`, validatorContent);
+    // } else {
+    //     console.log('Directory already exists.');
+    // }
+    // fs.writeFileSync(`${validationBaseDir}/${classNameCammelCase}.js`, validatorContent);
+}
+
+function adonisParse(rules:Rule[]){
+   const intanceName='schema';
+   switch(true){
+    case
+   }
 }
 
 export function snakeToCamel(str: string) {

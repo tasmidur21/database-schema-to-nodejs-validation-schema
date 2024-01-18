@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SchemaOperationForSqlite = void 0;
-const messages_1 = require("../config/messages");
+const messages_1 = require("../utils/messages");
 class SchemaOperationForSqlite {
     constructor() {
         this.integerTypes = {
@@ -21,19 +21,23 @@ class SchemaOperationForSqlite {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const tableExist = yield database.query(`SELECT name FROM sqlite_master WHERE type='table' AND name='${table}';`);
+            console.log(tableExist);
             if (!tableExist.length) {
-                throw new Error((0, messages_1.errorMessage)(`The ${table} table is exist!`));
+                throw new Error((0, messages_1.errorMessage)(`The ${table} table is not exist!`));
             }
             return (_a = yield database.query(`PRAGMA table_info('${table}')`)) !== null && _a !== void 0 ? _a : [];
         });
     }
-    generateColumnRules(tableSchema) {
-        var _a;
+    generateColumnRules(dataTableSchema, selectedColumns, skipColumns) {
         const rules = {};
-        const skipColumnValues = (_a = process.env.SKIP_COLLUMNS) !== null && _a !== void 0 ? _a : "";
-        const skipColumns = skipColumnValues.split(',');
+        let tableSchema = dataTableSchema;
+        if (skipColumns.length || selectedColumns.length) {
+            tableSchema = tableSchema.filter(({ name }) => {
+                return selectedColumns.length ? selectedColumns.includes(name) : !skipColumns.includes(name);
+            });
+        }
         tableSchema.forEach(({ name, type, notnull, dflt_value, pk }) => {
-            if (skipColumns.includes(name) || Boolean(pk)) {
+            if (Boolean(pk)) {
                 return;
             }
             let columnRules = [];

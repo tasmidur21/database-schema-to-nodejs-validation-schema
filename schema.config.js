@@ -1,24 +1,25 @@
 require("dotenv").config();
-const processEnv = process.env;
-module.exports={
-    name:"schemaConfig",
-    howImport: "require",
-    default: 'mysql',
-    postgres: {
-        host: processEnv.PG_DB_HOST,
-        port: processEnv.PG_DB_PORT,
-        user: processEnv.PG_DB_USER,
-        password: processEnv.PG_DB_PASSWORD,
-        database: processEnv.PG_DB_DATABASE,
+const schemaConfig = {
+    defaultDatabase: process.env.DEFAULT_CONNECTION || '',
+    databases: {
+      postgres: {
+        host: process.env.PG_DB_HOST || '',
+        port: parseInt(process.env.PG_DB_PORT, 10) || 5432,
+        user: process.env.PG_DB_USER || '',
+        password: process.env.PG_DB_PASSWORD || '',
+        database: process.env.PG_DB_DATABASE || '',
+      },
+      mysql: {
+        host: process.env.MYSQL_DB_HOST || '',
+        port: parseInt(process.env.MYSQL_DB_PORT, 10) || 3306,
+        user: process.env.MYSQL_DB_USER || '',
+        password: process.env.MYSQL_DB_PASSWORD || '',
+        database: process.env.MYSQL_DB_DATABASE || '',
+      },
+      sqlite: {
+        database: process.env.SQLITE_DB || '',
+      },
     },
-    mysql: {
-        host: processEnv.MYSQL_DB_HOST,
-        port: processEnv.MYSQL_DB_PORT,
-        user: processEnv.MYSQL_DB_USER,
-        password: processEnv.MYSQL_DB_PASSWORD,
-        database: processEnv.MYSQL_DB_DATABASE,
-    },
-    sqlite: {
-        database: processEnv.SQLITE_DB,
-    }
-}
+    skipColumns: (process.env.SKIP_COLUMNS || 'created_at,updated_at,deleted_at').split(','),
+  };
+  module.exports = schemaConfig;

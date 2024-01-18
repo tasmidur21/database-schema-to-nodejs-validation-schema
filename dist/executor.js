@@ -17,17 +17,18 @@ const SqliteDatabase_1 = require("./databases/SqliteDatabase");
 const SchemaOperationForMysql_1 = require("./schemas-operations/SchemaOperationForMysql");
 const SchemaOperationForPostgres_1 = require("./schemas-operations/SchemaOperationForPostgres");
 const SchemaOperationForSqlite_1 = require("./schemas-operations/SchemaOperationForSqlite");
-const messages_1 = require("./config/messages");
-const dynamicValidatorGenerator_1 = require("./dynamicValidatorGenerator");
+const messages_1 = require("./utils/messages");
 class Executor {
     constructor(table, databaseType, options) {
+        var _a;
         this.table = table;
-        this.databaseType = databaseType !== null && databaseType !== void 0 ? databaseType : config_1.config.database_type;
-        this.databaseConfig = config_1.config.database;
+        this.databaseType = databaseType !== null && databaseType !== void 0 ? databaseType : config_1.config.defaultDatabase;
+        this.databaseConfig = config_1.config.databases[this.databaseType];
+        this.skipColumns = (_a = config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.skipColumns) !== null && _a !== void 0 ? _a : [];
         this.options = options;
     }
     execute() {
-        var _a;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             let database;
             let operation;
@@ -50,12 +51,21 @@ class Executor {
             try {
                 yield database.connect();
                 let tableSchema = yield operation.getTableSchema(database, this.table);
+                let skipColumns = [];
+                let selectedColumns = [];
                 if (this.options && ((_a = this.options) === null || _a === void 0 ? void 0 : _a.columns) && this.options.columns.length > 0) {
-                    tableSchema = tableSchema.filter(({ column_name }) => this.options.columns.includes(column_name));
+                    selectedColumns = (_b = this.options) === null || _b === void 0 ? void 0 : _b.columns;
+                    skipColumns = this.skipColumns.filter((skipColumn) => { var _a; return !((_a = this.options) === null || _a === void 0 ? void 0 : _a.columns.includes(skipColumn)); });
                 }
-                const rules = operation.generateColumnRules(tableSchema);
-                (0, dynamicValidatorGenerator_1.generateValidator)(this.table, rules);
-                console.log(`The validation schema of ${this.table}:\n`, rules);
+                const rules = operation.generateColumnRules(tableSchema, selectedColumns, skipColumns);
+                // generateValidator(this.table,rules);
+                console.log("\n");
+                console.log(`🚀 Validation rules for "${this.table}" table generated! 🚀`);
+                console.log(`Copy and paste these rules into your validation location, such as controller, form request, or any applicable place 😊`);
+                console.log("______________________________________________________________________________________________________________________");
+                console.log("\n");
+                console.log(rules);
+                console.log("\n");
             }
             catch (error) {
                 console.error(error.message);

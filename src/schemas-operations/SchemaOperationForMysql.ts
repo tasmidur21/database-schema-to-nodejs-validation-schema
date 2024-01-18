@@ -1,4 +1,4 @@
-import { errorMessage, warningMessage } from "../config/messages";
+import { errorMessage, warningMessage } from "../utils/messages";
 import {ValidationSchema } from "../contacts/ValidationRule";
 
 export class SchemaOperationForMysql {
@@ -42,15 +42,20 @@ export class SchemaOperationForMysql {
           return await database.query(`SHOW COLUMNS FROM ${table}`)??[];
     }
 
-    public generateColumnRules(tableSchema: any[]): ValidationSchema {
+    public generateColumnRules(dataTableSchema: any[],selectedColumns:string[],skipColumns:string[]): ValidationSchema {
         
         const rules: ValidationSchema = {};
-        const skipColumnValues: any = process.env.SKIP_COLLUMNS ?? "";
-        const skipColumns: string[] = skipColumnValues.split(',');
+        let tableSchema=dataTableSchema;
 
+        if (skipColumns.length || selectedColumns.length) {
+            tableSchema = tableSchema.filter(({ Field }) => {
+                return selectedColumns.length ? selectedColumns.includes(Field):!skipColumns.includes(Field);
+            });
+          }
+          
         tableSchema.forEach(({ Field,Type,Null,Key,Default,Extra }) => {
 
-            if (skipColumns.includes(Field)|| Extra==='auto_increment') {
+            if (Extra==='auto_increment') {
                 return;
             }
 

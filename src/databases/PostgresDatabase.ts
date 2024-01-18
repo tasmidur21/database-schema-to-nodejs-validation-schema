@@ -11,9 +11,7 @@ export class PostgresDatabase implements Database {
   async connect(): Promise<void> {
     try {
       await this.client.connect();
-      console.log('Connected to PostgreSQL database');
     } catch (error:any) {
-      console.error('Error connecting to PostgreSQL database:', error.message);
       throw error;
     }
   }
@@ -22,7 +20,6 @@ export class PostgresDatabase implements Database {
     try {
       return await this.client.query(sql);
     } catch (error:any) {
-      console.error('Error executing query:', error.message);
       throw error;
     }
   }
@@ -30,9 +27,7 @@ export class PostgresDatabase implements Database {
   async end(): Promise<void> {
     try {
       await this.client.end();
-      console.log('Disconnected from PostgreSQL database');
     } catch (error:any) {
-      console.error('Error disconnecting from PostgreSQL database:', error.message);
       throw error;
     }
   }

@@ -13,11 +13,9 @@ export class SqliteDatabase implements Database {
     return new Promise<void>((resolve, reject) => {
       try {
         this.db.serialize(() => {
-          console.log('Connected to SQLite database');
           resolve();
         });
       } catch (error:any) {
-        console.error('Error connecting to SQLite database:', error.message);
         reject(error);
       }
     });
@@ -34,7 +32,6 @@ export class SqliteDatabase implements Database {
           }
         });
       } catch (error:any) {
-        console.error('Error executing query:', error.message);
         reject(error);
       }
     });
@@ -47,12 +44,10 @@ export class SqliteDatabase implements Database {
           if (err) {
             reject(err);
           } else {
-            console.log('Disconnected from SQLite database');
             resolve();
           }
         });
       } catch (error:any) {
-        console.error('Error disconnecting from SQLite database:', error.message);
         reject(error);
       }
     });

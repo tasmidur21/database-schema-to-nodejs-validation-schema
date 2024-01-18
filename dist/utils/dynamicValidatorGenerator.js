@@ -28,7 +28,7 @@ exports.snakeToCamel = exports.generateValidator = void 0;
 const fs = __importStar(require("fs"));
 const Handlebars = __importStar(require("handlebars"));
 const path = __importStar(require("path"));
-const validatorTemplateSource = fs.readFileSync(path.resolve(__dirname, './templates/validationTemplate.template.hbs'), 'utf8');
+const validatorTemplateSource = fs.readFileSync(path.resolve(__dirname, '../templates/validationTemplate.template.hbs'), 'utf8');
 const template = Handlebars.compile(validatorTemplateSource);
 function generateValidator(className, rules) {
     const classNameCammelCase = snakeToCamel(className);

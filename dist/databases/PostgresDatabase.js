@@ -19,10 +19,8 @@ class PostgresDatabase {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 yield this.client.connect();
-                console.log('Connected to PostgreSQL database');
             }
             catch (error) {
-                console.error('Error connecting to PostgreSQL database:', error.message);
                 throw error;
             }
         });
@@ -33,7 +31,6 @@ class PostgresDatabase {
                 return yield this.client.query(sql);
             }
             catch (error) {
-                console.error('Error executing query:', error.message);
                 throw error;
             }
         });
@@ -42,10 +39,8 @@ class PostgresDatabase {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 yield this.client.end();
-                console.log('Disconnected from PostgreSQL database');
             }
             catch (error) {
-                console.error('Error disconnecting from PostgreSQL database:', error.message);
                 throw error;
             }
         });
