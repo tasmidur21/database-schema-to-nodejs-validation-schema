@@ -24,7 +24,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.snakeToCamel = exports.generateValidator = void 0;
-// dynamicValidatorGenerator.ts
 const fs = __importStar(require("fs"));
 const Handlebars = __importStar(require("handlebars"));
 const path = __importStar(require("path"));
@@ -37,16 +36,15 @@ function generateValidator(className, rules) {
         className: formattedClassName,
         rules
     });
-    const validationBaseDir = path.join(process.cwd(), `/validators`);
-    // Check if the directory exists
-    if (!fs.existsSync(validationBaseDir)) {
-        // If not, create the directory
-        fs.mkdirSync(validationBaseDir);
-    }
-    else {
-        console.log('Directory already exists.');
-    }
-    fs.writeFileSync(`${validationBaseDir}/${classNameCammelCase}.js`, validatorContent);
+    // const validationBaseDir = path.join(process.cwd(), `/validators`);
+    // // Check if the directory exists
+    // if (!fs.existsSync(validationBaseDir)) {
+    //     // If not, create the directory
+    //     fs.mkdirSync(validationBaseDir);
+    // } else {
+    //     console.log('Directory already exists.');
+    // }
+    // fs.writeFileSync(`${validationBaseDir}/${classNameCammelCase}.js`, validatorContent);
 }
 exports.generateValidator = generateValidator;
 function snakeToCamel(str) {

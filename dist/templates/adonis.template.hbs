@@ -1,0 +1,23 @@
+// app/Validators/UserRegistrationValidator.ts
+import { schema, rules } from '@ioc:Adonis/Core/Validator'
+ {{#each rules}}
+            {{ @key }}: ['{{ this }}'],
+            {{/each}}
+export default class {{className}}Validator {
+  public schema = schema.create({
+       {{#each rules}}
+         {{ @key }}: ['{{ this }}'],
+       {{/each}}
+  })
+
+  public messages = {
+    'username.required': 'Username is required',
+    'username.unique': 'Username is already taken',
+    'email.required': 'Email is required',
+    'email.email': 'Invalid email format',
+    'email.unique': 'Email is already registered',
+    'password.required': 'Password is required',
+    'password.minLength': 'Password must be at least 6 characters long',
+    'password.confirmed': 'Password confirmation does not match',
+  }
+}
