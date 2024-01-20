@@ -1,15 +1,14 @@
 import * as Validator from 'validatorjs';
 
-class {{ className }} {
+class AlbumRequestValidator {
     constructor(formData) {
         this.formData = formData;
     }
 
     validate() {
          const rules = {
-            {{#each rules}}
-            {{ @key }}: ['{{ this }}'],
-            {{/each}}
+            Title: ['nullable,string,max:160'],
+            ArtistId: ['nullable,integer,min:-9223372036854775808,max:9223372036854775807'],
         };
 
         const validation = new Validator(this.formData, rules);
@@ -22,4 +21,4 @@ class {{ className }} {
         }
     }
 }
-module.exports = {{ className }};
+module.exports = AlbumRequestValidator;

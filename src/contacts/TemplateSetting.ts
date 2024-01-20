@@ -1,7 +1,8 @@
 import { RequestSchemaClassMap } from "./RequestSchemaClassMap";
 
 export interface templateSetting{
+    fileName:string,
     rules:string[],
-    fileName:(keyof RequestSchemaClassMap),
+    templateType:(keyof RequestSchemaClassMap),
     stroreDir?:string
 }

@@ -6,7 +6,11 @@ class {{ className }} {
     }
 
     validate() {
-        const rules = {{rules}}
+         const rules = {
+            {{#each rules}}
+            {{ @key }}: ['{{ this }}'],
+            {{/each}}
+        };
 
         const validation = new Validator(this.formData, rules);
 

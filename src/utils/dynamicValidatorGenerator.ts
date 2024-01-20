@@ -1,8 +1,9 @@
 import * as fs from 'fs';
 import * as Handlebars from 'handlebars';
 import * as path from 'path';
-import { snakeToCamel } from './manipulation';
-const validatorTemplateSource = fs.readFileSync(path.resolve(__dirname,'../templates/validationTemplate.template.hbs'), 'utf8');
+import { snakeToCamel } from './utils';
+
+const validatorTemplateSource = fs.readFileSync(path.resolve(__dirname,'../templates/validatorjs.template.hbs'), 'utf8');
 const template = Handlebars.compile(validatorTemplateSource);
 
 interface Rule {
