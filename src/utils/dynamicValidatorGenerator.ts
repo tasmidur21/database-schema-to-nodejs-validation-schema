@@ -1,4 +1,3 @@
-// dynamicValidatorGenerator.ts
 import * as fs from 'fs';
 import * as Handlebars from 'handlebars';
 import * as path from 'path';
@@ -17,7 +16,7 @@ export function generateValidator(className: string, rules: Rule[]): void {
         className: formattedClassName,
         rules
     });
-    adonisParse(rules);
+   
     // const validationBaseDir = path.join(process.cwd(), `/validators`);
     // // Check if the directory exists
     // if (!fs.existsSync(validationBaseDir)) {
@@ -28,13 +27,6 @@ export function generateValidator(className: string, rules: Rule[]): void {
     //     console.log('Directory already exists.');
     // }
     // fs.writeFileSync(`${validationBaseDir}/${classNameCammelCase}.js`, validatorContent);
-}
-
-function adonisParse(rules:Rule[]){
-   const intanceName='schema';
-   switch(true){
-    case
-   }
 }
 
 export function snakeToCamel(str: string) {
