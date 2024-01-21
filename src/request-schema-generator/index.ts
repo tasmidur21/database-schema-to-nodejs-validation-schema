@@ -23,7 +23,6 @@ export class RequestSchemaGenerator {
     templateSetting: templateSetting
   ): InstanceType<RequestSchemaClassMap[keyof RequestSchemaClassMap]> {
     const RequestSchemaGeneratorClass = requestSchemaClassMap[validationType];
-      console.log(RequestSchemaGeneratorClass);
     if (RequestSchemaGeneratorClass) {
       return new RequestSchemaGeneratorClass(templateSetting)
     } else {

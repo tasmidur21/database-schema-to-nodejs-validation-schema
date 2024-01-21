@@ -18,6 +18,13 @@ export function getClassName(value:any,format:string){
       return classNameCammelCase.charAt(0).toUpperCase() + classNameCammelCase.slice(1);
 }
 
+export const buildTemplateContent=(template:string, replacements:any) => {
+  return Object.keys(replacements).reduce((result, key) => {
+    const placeholder = `#__${key}__#`;
+    return result.replace(new RegExp(placeholder, 'g'), replacements[key]);
+  }, template);
+};
+
 export function storeFile(content:any,fileName:any,directory:string){
   const fullPath=path.join(process.cwd(), directory)
      if (!fs.existsSync(fullPath)) {

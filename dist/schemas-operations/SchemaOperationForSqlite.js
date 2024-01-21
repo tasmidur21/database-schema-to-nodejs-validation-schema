@@ -41,7 +41,6 @@ class SchemaOperationForSqlite {
                 return;
             }
             let columnRules = [];
-            columnRules.push(Boolean(notnull) ? 'nullable' : 'required');
             let dataType = type.toLowerCase();
             switch (true) {
                 case dataType === 'tinyint(1)':
@@ -68,6 +67,7 @@ class SchemaOperationForSqlite {
                     // Skip BLOB for now
                     break;
             }
+            columnRules.push(Boolean(notnull) ? 'nullable' : 'required');
             rules[name] = columnRules;
         });
         return rules;

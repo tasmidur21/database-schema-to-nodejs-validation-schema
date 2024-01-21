@@ -44,7 +44,6 @@ export class SchemaOperationForPostgres {
             }
 
             let columnRules = [];
-            columnRules.push(is_nullable === 'YES' ? 'nullable' : 'required');
             let type = data_type;
 
             switch (true) {
@@ -79,6 +78,7 @@ export class SchemaOperationForPostgres {
                    // Skip for other type
                     break;
             }
+            columnRules.push(is_nullable === 'YES' ? 'nullable' : 'required');
             rules[column_name] = columnRules;
         })
         return rules;

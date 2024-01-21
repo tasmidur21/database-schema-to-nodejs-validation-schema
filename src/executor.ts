@@ -8,7 +8,7 @@ import { SchemaOperationForMysql } from "./schemas-operations/SchemaOperationFor
 import { SchemaOperationForPostgres } from "./schemas-operations/SchemaOperationForPostgres";
 import { SchemaOperationForSqlite } from "./schemas-operations/SchemaOperationForSqlite";
 import { errorMessage } from "./utils/messages";
-import { REQUEST_VALIDATION_TYPE_VALIDATORJS } from "./utils/constants";
+import { REQUEST_VALIDATION_TYPE_JOI, REQUEST_VALIDATION_TYPE_VALIDATORJS } from "./utils/constants";
 import { RequestSchemaGenerator } from "./request-schema-generator";
 import { templateSetting } from "./contacts/TemplateSetting";
 
@@ -59,7 +59,7 @@ export class Executor {
       const templateSetting:templateSetting={
         fileName:this.table,
         rules:rules,
-        templateType:REQUEST_VALIDATION_TYPE_VALIDATORJS,
+        templateType:REQUEST_VALIDATION_TYPE_JOI,
         stroreDir:"request-validators"
       }
 
@@ -70,7 +70,7 @@ export class Executor {
       console.log(`Copy and paste these rules into your validation location, such as controller, form request, or any applicable place 😊`)
       console.log("______________________________________________________________________________________________________________________");
       console.log("\n");
-      console.log(rules);
+      //console.log(rules);
       console.log("\n");
       } catch (error:any) {
         console.error(error.message);

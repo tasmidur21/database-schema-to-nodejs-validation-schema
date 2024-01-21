@@ -35,7 +35,6 @@ export class SchemaOperationForSqlite {
             }
 
             let columnRules = [];
-            columnRules.push(Boolean(notnull) ? 'nullable' : 'required');
             let dataType = type.toLowerCase();
 
             switch (true) {
@@ -62,6 +61,7 @@ export class SchemaOperationForSqlite {
                     // Skip BLOB for now
                     break;
             }
+            columnRules.push(Boolean(notnull) ? 'nullable' : 'required');
             rules[name] = columnRules;
         })
         return rules;

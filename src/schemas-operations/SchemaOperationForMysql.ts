@@ -60,7 +60,7 @@ export class SchemaOperationForMysql {
             }
 
             let columnRules = [];
-            columnRules.push(Null === 'YES' ? 'nullable' : 'required');
+            
             let type = Type;
 
             switch (true) {
@@ -116,6 +116,7 @@ export class SchemaOperationForMysql {
                     // Skip for other type like Binary,Bit and Spatial Types
                     break;
             }
+            columnRules.push(Null === 'YES' ? 'nullable' : 'required');
             rules[Field] = columnRules;
         })
         return rules;

@@ -63,16 +63,16 @@ class Executor {
                 const templateSetting = {
                     fileName: this.table,
                     rules: rules,
-                    templateType: constants_1.REQUEST_VALIDATION_TYPE_VALIDATORJS,
+                    templateType: constants_1.REQUEST_VALIDATION_TYPE_JOI,
                     stroreDir: "request-validators"
                 };
                 new request_schema_generator_1.RequestSchemaGenerator(templateSetting);
                 console.log("\n");
-                console.log(`🚀 Validation rules for "${this.table}" table generated! 🚀`);
+                console.log(`🚀 Schema Base Validation rules for "${this.table}" table generated! 🚀`);
                 console.log(`Copy and paste these rules into your validation location, such as controller, form request, or any applicable place 😊`);
                 console.log("______________________________________________________________________________________________________________________");
                 console.log("\n");
-                console.log(rules);
+                //console.log(rules);
                 console.log("\n");
             }
             catch (error) {

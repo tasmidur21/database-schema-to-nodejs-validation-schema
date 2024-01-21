@@ -11,7 +11,6 @@ class RequestSchemaGenerator {
     // Function to initialize a class based on the request validation type
     initializeRequestSchemaGenerator(validationType, templateSetting) {
         const RequestSchemaGeneratorClass = RequestSchemaClassMap_1.requestSchemaClassMap[validationType];
-        console.log(RequestSchemaGeneratorClass);
         if (RequestSchemaGeneratorClass) {
             return new RequestSchemaGeneratorClass(templateSetting);
         }

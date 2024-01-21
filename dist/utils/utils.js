@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.storeFile = exports.getClassName = exports.snakeToCamel = exports.arrayIntersection = void 0;
+exports.storeFile = exports.buildTemplateContent = exports.getClassName = exports.snakeToCamel = exports.arrayIntersection = void 0;
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 function arrayIntersection(arr1, arr2) {
@@ -43,6 +43,13 @@ function getClassName(value, format) {
     return classNameCammelCase.charAt(0).toUpperCase() + classNameCammelCase.slice(1);
 }
 exports.getClassName = getClassName;
+const buildTemplateContent = (template, replacements) => {
+    return Object.keys(replacements).reduce((result, key) => {
+        const placeholder = `#__${key}__#`;
+        return result.replace(new RegExp(placeholder, 'g'), replacements[key]);
+    }, template);
+};
+exports.buildTemplateContent = buildTemplateContent;
 function storeFile(content, fileName, directory) {
     const fullPath = path.join(process.cwd(), directory);
     if (!fs.existsSync(fullPath)) {
