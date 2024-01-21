@@ -18,6 +18,8 @@ const SchemaOperationForMysql_1 = require("./schemas-operations/SchemaOperationF
 const SchemaOperationForPostgres_1 = require("./schemas-operations/SchemaOperationForPostgres");
 const SchemaOperationForSqlite_1 = require("./schemas-operations/SchemaOperationForSqlite");
 const messages_1 = require("./utils/messages");
+const constants_1 = require("./utils/constants");
+const request_schema_generator_1 = require("./request-schema-generator");
 class Executor {
     constructor(table, databaseType, options) {
         var _a;
@@ -58,7 +60,13 @@ class Executor {
                     skipColumns = this.skipColumns.filter((skipColumn) => { var _a; return !((_a = this.options) === null || _a === void 0 ? void 0 : _a.columns.includes(skipColumn)); });
                 }
                 const rules = operation.generateColumnRules(tableSchema, selectedColumns, skipColumns);
-                // generateValidator(this.table,rules);
+                const templateSetting = {
+                    fileName: this.table,
+                    rules: rules,
+                    templateType: constants_1.REQUEST_VALIDATION_TYPE_VALIDATORJS,
+                    stroreDir: "request-validators"
+                };
+                new request_schema_generator_1.RequestSchemaGenerator(templateSetting);
                 console.log("\n");
                 console.log(`🚀 Validation rules for "${this.table}" table generated! 🚀`);
                 console.log(`Copy and paste these rules into your validation location, such as controller, form request, or any applicable place 😊`);

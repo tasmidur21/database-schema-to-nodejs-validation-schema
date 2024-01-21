@@ -1,8 +1,9 @@
-// dynamicValidatorGenerator.ts
 import * as fs from 'fs';
 import * as Handlebars from 'handlebars';
 import * as path from 'path';
-const validatorTemplateSource = fs.readFileSync(path.resolve(__dirname,'../templates/validationTemplate.template.hbs'), 'utf8');
+import { snakeToCamel } from './utils';
+
+const validatorTemplateSource = fs.readFileSync(path.resolve(__dirname,'../templates/validatorjs.template.hbs'), 'utf8');
 const template = Handlebars.compile(validatorTemplateSource);
 
 interface Rule {
@@ -17,7 +18,7 @@ export function generateValidator(className: string, rules: Rule[]): void {
         className: formattedClassName,
         rules
     });
-    adonisParse(rules);
+   
     // const validationBaseDir = path.join(process.cwd(), `/validators`);
     // // Check if the directory exists
     // if (!fs.existsSync(validationBaseDir)) {
@@ -30,15 +31,6 @@ export function generateValidator(className: string, rules: Rule[]): void {
     // fs.writeFileSync(`${validationBaseDir}/${classNameCammelCase}.js`, validatorContent);
 }
 
-function adonisParse(rules:Rule[]){
-   const intanceName='schema';
-   switch(true){
-    case
-   }
-}
 
-export function snakeToCamel(str: string) {
-    return str.replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
-}
 
 

@@ -7,9 +7,10 @@ import { SqliteDatabase } from "./databases/SqliteDatabase";
 import { SchemaOperationForMysql } from "./schemas-operations/SchemaOperationForMysql";
 import { SchemaOperationForPostgres } from "./schemas-operations/SchemaOperationForPostgres";
 import { SchemaOperationForSqlite } from "./schemas-operations/SchemaOperationForSqlite";
-import { errorMessage, successMessage } from "./utils/messages";
-import { generateValidator } from "./utils/dynamicValidatorGenerator";
-import { arrayIntersection } from "./utils/manipulation";
+import { errorMessage } from "./utils/messages";
+import { REQUEST_VALIDATION_TYPE_VALIDATORJS } from "./utils/constants";
+import { RequestSchemaGenerator } from "./request-schema-generator";
+import { templateSetting } from "./contacts/TemplateSetting";
 
 export class Executor {
   private table: string;
@@ -54,9 +55,18 @@ export class Executor {
         skipColumns=this.skipColumns.filter((skipColumn)=>!this.options?.columns.includes(skipColumn));
       }
       const rules = operation.generateColumnRules(tableSchema,selectedColumns,skipColumns);
-     // generateValidator(this.table,rules);
+
+      const templateSetting:templateSetting={
+        fileName:this.table,
+        rules:rules,
+        templateType:REQUEST_VALIDATION_TYPE_VALIDATORJS,
+        stroreDir:"request-validators"
+      }
+
+      new RequestSchemaGenerator(templateSetting);
+      
       console.log("\n");
-      console.log(`🚀 Validation rules for "${this.table}" table generated! 🚀`)
+      console.log(`🚀 Schema Base Validation rules for "${this.table}" table generated! 🚀`)
       console.log(`Copy and paste these rules into your validation location, such as controller, form request, or any applicable place 😊`)
       console.log("______________________________________________________________________________________________________________________");
       console.log("\n");

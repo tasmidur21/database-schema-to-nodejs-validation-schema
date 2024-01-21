@@ -23,28 +23,30 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateValidator = void 0;
+exports.ValidatorJsRequestSchemaGenerator = void 0;
 const fs = __importStar(require("fs"));
 const Handlebars = __importStar(require("handlebars"));
 const path = __importStar(require("path"));
-const utils_1 = require("./utils");
-const validatorTemplateSource = fs.readFileSync(path.resolve(__dirname, '../templates/validatorjs.template.hbs'), 'utf8');
-const template = Handlebars.compile(validatorTemplateSource);
-function generateValidator(className, rules) {
-    const classNameCammelCase = (0, utils_1.snakeToCamel)(className);
-    const formattedClassName = classNameCammelCase.charAt(0).toUpperCase() + classNameCammelCase.slice(1);
-    const validatorContent = template({
-        className: formattedClassName,
-        rules
-    });
-    // const validationBaseDir = path.join(process.cwd(), `/validators`);
-    // // Check if the directory exists
-    // if (!fs.existsSync(validationBaseDir)) {
-    //     // If not, create the directory
-    //     fs.mkdirSync(validationBaseDir);
-    // } else {
-    //     console.log('Directory already exists.');
-    // }
-    // fs.writeFileSync(`${validationBaseDir}/${classNameCammelCase}.js`, validatorContent);
+const utils_1 = require("../utils/utils");
+const CLASS_NAME_SUFFIX = `{{className}}RequestValidator`;
+const basePath = `validators`;
+const templateSource = fs.readFileSync(path.resolve(__dirname, '../templates/validatorjs.template.hbs'), 'utf8');
+class ValidatorJsRequestSchemaGenerator {
+    constructor(templateSetting) {
+        var _a;
+        this.templateSetting = templateSetting;
+        this.storeDir = (_a = templateSetting === null || templateSetting === void 0 ? void 0 : templateSetting.stroreDir) !== null && _a !== void 0 ? _a : basePath;
+        this.className = (0, utils_1.getClassName)({
+            className: (0, utils_1.snakeToCamel)(this.templateSetting.fileName)
+        }, CLASS_NAME_SUFFIX);
+    }
+    buildAndStore() {
+        const template = Handlebars.compile(templateSource);
+        const content = template({
+            className: this.className,
+            rules: this.templateSetting.rules
+        });
+        return (0, utils_1.storeFile)(content, this.className, this.storeDir);
+    }
 }
-exports.generateValidator = generateValidator;
+exports.ValidatorJsRequestSchemaGenerator = ValidatorJsRequestSchemaGenerator;

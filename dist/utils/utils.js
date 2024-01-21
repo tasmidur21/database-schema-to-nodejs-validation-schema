@@ -23,28 +23,32 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateValidator = void 0;
+exports.storeFile = exports.getClassName = exports.snakeToCamel = exports.arrayIntersection = void 0;
 const fs = __importStar(require("fs"));
-const Handlebars = __importStar(require("handlebars"));
 const path = __importStar(require("path"));
-const utils_1 = require("./utils");
-const validatorTemplateSource = fs.readFileSync(path.resolve(__dirname, '../templates/validatorjs.template.hbs'), 'utf8');
-const template = Handlebars.compile(validatorTemplateSource);
-function generateValidator(className, rules) {
-    const classNameCammelCase = (0, utils_1.snakeToCamel)(className);
-    const formattedClassName = classNameCammelCase.charAt(0).toUpperCase() + classNameCammelCase.slice(1);
-    const validatorContent = template({
-        className: formattedClassName,
-        rules
-    });
-    // const validationBaseDir = path.join(process.cwd(), `/validators`);
-    // // Check if the directory exists
-    // if (!fs.existsSync(validationBaseDir)) {
-    //     // If not, create the directory
-    //     fs.mkdirSync(validationBaseDir);
-    // } else {
-    //     console.log('Directory already exists.');
-    // }
-    // fs.writeFileSync(`${validationBaseDir}/${classNameCammelCase}.js`, validatorContent);
+function arrayIntersection(arr1, arr2) {
+    const set1 = new Set(arr1);
+    const set2 = new Set(arr2);
+    return [...set1].filter(value => set2.has(value));
 }
-exports.generateValidator = generateValidator;
+exports.arrayIntersection = arrayIntersection;
+function snakeToCamel(str) {
+    return str.replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
+}
+exports.snakeToCamel = snakeToCamel;
+function getClassName(value, format) {
+    const classNameCammelCase = format.replace(/\{\{(\w+)\}\}/g, (match, key) => {
+        return value[key] !== undefined ? `${value[key]}` : match;
+    });
+    return classNameCammelCase.charAt(0).toUpperCase() + classNameCammelCase.slice(1);
+}
+exports.getClassName = getClassName;
+function storeFile(content, fileName, directory) {
+    const fullPath = path.join(process.cwd(), directory);
+    if (!fs.existsSync(fullPath)) {
+        // If not, create the directory
+        fs.mkdirSync(fullPath);
+    }
+    return fs.writeFileSync(`${fullPath}/${fileName}.js`, content);
+}
+exports.storeFile = storeFile;
