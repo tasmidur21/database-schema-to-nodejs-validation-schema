@@ -18,9 +18,9 @@ commander_1.program
     var _a, _b;
     const tableName = cmd.table;
     const databaseType = (_a = cmd === null || cmd === void 0 ? void 0 : cmd.database) !== null && _a !== void 0 ? _a : null;
-    const columns = (_b = cmd === null || cmd === void 0 ? void 0 : cmd.columns) !== null && _b !== void 0 ? _b : "";
+    const columns = (_b = cmd === null || cmd === void 0 ? void 0 : cmd.columns) !== null && _b !== void 0 ? _b : '';
     const options = {
-        columns: columns.split(",").filter(Boolean)
+        columns: columns.split(',').filter(Boolean),
     };
     new executor_1.Executor(tableName, databaseType, options).execute();
 });

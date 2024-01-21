@@ -35,7 +35,7 @@ function generateValidator(className, rules) {
     const formattedClassName = classNameCammelCase.charAt(0).toUpperCase() + classNameCammelCase.slice(1);
     const validatorContent = template({
         className: formattedClassName,
-        rules
+        rules,
     });
     // const validationBaseDir = path.join(process.cwd(), `/validators`);
     // // Check if the directory exists

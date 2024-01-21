@@ -37,14 +37,14 @@ class ValidatorJsRequestSchemaGenerator {
         this.templateSetting = templateSetting;
         this.storeDir = (_a = templateSetting === null || templateSetting === void 0 ? void 0 : templateSetting.stroreDir) !== null && _a !== void 0 ? _a : basePath;
         this.className = (0, utils_1.getClassName)({
-            className: (0, utils_1.snakeToCamel)(this.templateSetting.fileName)
+            className: (0, utils_1.snakeToCamel)(this.templateSetting.fileName),
         }, CLASS_NAME_SUFFIX);
     }
     buildAndStore() {
         const template = Handlebars.compile(templateSource);
         const content = template({
             className: this.className,
-            rules: this.templateSetting.rules
+            rules: this.templateSetting.rules,
         });
         return (0, utils_1.storeFile)(content, this.className, this.storeDir);
     }

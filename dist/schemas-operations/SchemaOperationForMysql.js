@@ -35,13 +35,15 @@ class SchemaOperationForMysql {
                 signed: { min: '-9223372036854775808', max: '9223372036854775807' },
             },
             year: {
-                min: "1901",
-                max: "2155"
+                //YEAR data type in MySQL allows representation of years in the range '0000' to '2155' and '1901'
+                min: '1901',
+                max: '2155',
             },
             timestamp: {
+                //the timestamp range for the TIMESTAMP data type in MySQL is from '1970-01-01 00:00:01' to '2038-01-19 03:14:07'
                 min: '1970-01-01 00:00:01',
-                max: '2038-01-19 03:14:07'
-            }
+                max: '2038-01-19 03:14:07',
+            },
         };
     }
     getTableSchema(database, table) {
@@ -51,7 +53,7 @@ class SchemaOperationForMysql {
             if (!tableExist.length) {
                 throw new Error((0, messages_1.warningMessage)(`The ${table} table is not exist!`));
             }
-            return (_a = yield database.query(`SHOW COLUMNS FROM ${table}`)) !== null && _a !== void 0 ? _a : [];
+            return (_a = (yield database.query(`SHOW COLUMNS FROM ${table}`))) !== null && _a !== void 0 ? _a : [];
         });
     }
     generateColumnRules(dataTableSchema, selectedColumns, skipColumns) {
@@ -59,7 +61,9 @@ class SchemaOperationForMysql {
         let tableSchema = dataTableSchema;
         if (skipColumns.length || selectedColumns.length) {
             tableSchema = tableSchema.filter(({ Field }) => {
-                return selectedColumns.length ? selectedColumns.includes(Field) : !skipColumns.includes(Field);
+                return selectedColumns.length
+                    ? selectedColumns.includes(Field)
+                    : !skipColumns.includes(Field);
             });
         }
         tableSchema.forEach(({ Field, Type, Null, Key, Default, Extra }) => {
@@ -70,7 +74,7 @@ class SchemaOperationForMysql {
             let type = Type;
             switch (true) {
                 case type === 'tinyint(1)':
-                    columnRules.push('integer');
+                    columnRules.push('boolean');
                     break;
                 case type.includes('char'):
                     columnRules.push('string');
@@ -90,11 +94,16 @@ class SchemaOperationForMysql {
                     columnRules.push('min:' + this.integerTypes[intType][sign].min);
                     columnRules.push('max:' + this.integerTypes[intType][sign].max);
                     break;
-                case type.includes('double') || type.includes('decimal') || type.includes('dec') || type.includes('float'):
+                case type.includes('double') ||
+                    type.includes('decimal') ||
+                    type.includes('dec') ||
+                    type.includes('float'):
                     columnRules.push('numeric');
                     break;
                 case type.includes('enum') || type.includes('set'):
-                    const matches = type.match(/'([^']*)'/g).map((match) => match.slice(1, -1));
+                    const matches = type
+                        .match(/'([^']*)'/g)
+                        .map((match) => match.slice(1, -1));
                     columnRules.push('string');
                     columnRules.push('in:' + matches.join(','));
                     break;

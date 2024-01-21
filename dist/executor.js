@@ -55,7 +55,9 @@ class Executor {
                 let tableSchema = yield operation.getTableSchema(database, this.table);
                 let skipColumns = [];
                 let selectedColumns = [];
-                if (this.options && ((_a = this.options) === null || _a === void 0 ? void 0 : _a.columns) && this.options.columns.length > 0) {
+                if (this.options &&
+                    ((_a = this.options) === null || _a === void 0 ? void 0 : _a.columns) &&
+                    this.options.columns.length > 0) {
                     selectedColumns = (_b = this.options) === null || _b === void 0 ? void 0 : _b.columns;
                     skipColumns = this.skipColumns.filter((skipColumn) => { var _a; return !((_a = this.options) === null || _a === void 0 ? void 0 : _a.columns.includes(skipColumn)); });
                 }
@@ -64,16 +66,16 @@ class Executor {
                     fileName: this.table,
                     rules: rules,
                     templateType: constants_1.REQUEST_VALIDATION_TYPE_JOI,
-                    stroreDir: "request-validators"
+                    stroreDir: 'request-validators',
                 };
                 new request_schema_generator_1.RequestSchemaGenerator(templateSetting);
-                console.log("\n");
+                console.log('\n');
                 console.log(`🚀 Schema Base Validation rules for "${this.table}" table generated! 🚀`);
                 console.log(`Copy and paste these rules into your validation location, such as controller, form request, or any applicable place 😊`);
-                console.log("______________________________________________________________________________________________________________________");
-                console.log("\n");
-                //console.log(rules);
-                console.log("\n");
+                console.log('______________________________________________________________________________________________________________________');
+                console.log('\n');
+                console.log(rules);
+                console.log('\n');
             }
             catch (error) {
                 console.error(error.message);
