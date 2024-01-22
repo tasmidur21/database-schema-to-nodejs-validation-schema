@@ -12,9 +12,7 @@ const validateConfig = (config) => {
         throw new Error('Invalid or missing "databases" property in the configuration.');
     }
     // Validate at least one database is provided
-    if (!databases.postgres &&
-        !databases.mysql &&
-        !databases.sqlite) {
+    if (!databases.postgres && !databases.mysql && !databases.sqlite) {
         throw new Error('At least one database configuration (postgres, mysql, or sqlite) must be provided in schema.config.js file in your working directory');
     }
     // Validate postgres configuration

@@ -1,11 +1,9 @@
+import { config as dotenvConfig } from 'dotenv'
+import * as path from 'path'
+import { validateConfig } from '../utils/validation'
 
-import { config as dotenvConfig } from 'dotenv';
-import * as path from 'path';
-import { validateConfig } from '../utils/validation';
+dotenvConfig()
 
-dotenvConfig();
+const schemaConfig = require(path.join(process.cwd(), '/schema.config.js'))
 
-const schemaConfig = require(path.join(process.cwd(), "/schema.config.js"));
-
-export const config:any = validateConfig(schemaConfig);
-
+export const config: any = validateConfig(schemaConfig)

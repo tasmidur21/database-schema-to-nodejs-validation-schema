@@ -34,9 +34,12 @@ class JoiRequestSchemaGenerator {
     constructor(templateSetting) {
         var _a;
         this.parse = (rules) => {
-            return Object.keys(rules).map((key) => {
+            return Object.keys(rules)
+                .map((key) => {
                 const schemaRules = this.templateSetting.rules[key];
-                let concatedData = schemaRules.map((_item) => {
+                let concatedRules = schemaRules
+                    .map((_item) => {
+                    var _a, _b;
                     let rule = ``;
                     switch (true) {
                         case _item === 'string':
@@ -51,12 +54,19 @@ class JoiRequestSchemaGenerator {
                         case _item.includes('date'):
                             rule = '.date()';
                             break;
-                        case _item.includes('max'):
-                            rule = '.max(10)';
+                        case _item.includes('bool'):
+                            rule = '.boolean()';
                             break;
-                        case _item.includes('min'):
-                            rule = '.min(1)';
+                        case _item.includes('max'): {
+                            const value = (_a = _item.split(':')[1]) !== null && _a !== void 0 ? _a : 1;
+                            rule = `.max(${value})`;
                             break;
+                        }
+                        case _item.includes('min'): {
+                            const value = (_b = _item.split(':')[1]) !== null && _b !== void 0 ? _b : 1;
+                            rule = `.min(${value})`;
+                            break;
+                        }
                         case _item.includes('required'):
                             rule = '.required()';
                             break;
@@ -67,20 +77,22 @@ class JoiRequestSchemaGenerator {
                             break;
                     }
                     return rule;
-                }).join('');
-                return `${key}:Joi${concatedData},`;
-            }).join('\n');
+                })
+                    .join('');
+                return `${key}:Joi${concatedRules},`;
+            })
+                .join('\n');
         };
         this.templateSetting = templateSetting;
         this.storeDir = (_a = templateSetting === null || templateSetting === void 0 ? void 0 : templateSetting.stroreDir) !== null && _a !== void 0 ? _a : basePath;
         this.className = (0, utils_1.getClassName)({
-            className: (0, utils_1.snakeToCamel)(this.templateSetting.fileName)
+            className: (0, utils_1.snakeToCamel)(this.templateSetting.fileName),
         }, CLASS_NAME_SUFFIX);
     }
     buildAndStore() {
         const content = (0, utils_1.buildTemplateContent)(templateSource, {
             CLASS_NAME: this.className,
-            RULES: this.parse(this.templateSetting.rules)
+            RULES: this.parse(this.templateSetting.rules),
         });
         return (0, utils_1.storeFile)(content, this.className, this.storeDir);
     }

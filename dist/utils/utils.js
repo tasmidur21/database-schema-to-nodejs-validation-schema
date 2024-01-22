@@ -29,7 +29,7 @@ const path = __importStar(require("path"));
 function arrayIntersection(arr1, arr2) {
     const set1 = new Set(arr1);
     const set2 = new Set(arr2);
-    return [...set1].filter(value => set2.has(value));
+    return [...set1].filter((value) => set2.has(value));
 }
 exports.arrayIntersection = arrayIntersection;
 function snakeToCamel(str) {
@@ -40,7 +40,7 @@ function getClassName(value, format) {
     const classNameCammelCase = format.replace(/\{\{(\w+)\}\}/g, (match, key) => {
         return value[key] !== undefined ? `${value[key]}` : match;
     });
-    return classNameCammelCase.charAt(0).toUpperCase() + classNameCammelCase.slice(1);
+    return (classNameCammelCase.charAt(0).toUpperCase() + classNameCammelCase.slice(1));
 }
 exports.getClassName = getClassName;
 const buildTemplateContent = (template, replacements) => {

@@ -14,7 +14,7 @@ const messages_1 = require("../utils/messages");
 class SchemaOperationForSqlite {
     constructor() {
         this.integerTypes = {
-            integer: { min: '-9223372036854775808', max: '9223372036854775807' }
+            integer: { min: '-9223372036854775808', max: '9223372036854775807' },
         };
     }
     getTableSchema(database, table) {
@@ -25,7 +25,7 @@ class SchemaOperationForSqlite {
             if (!tableExist.length) {
                 throw new Error((0, messages_1.errorMessage)(`The ${table} table is not exist!`));
             }
-            return (_a = yield database.query(`PRAGMA table_info('${table}')`)) !== null && _a !== void 0 ? _a : [];
+            return (_a = (yield database.query(`PRAGMA table_info('${table}')`))) !== null && _a !== void 0 ? _a : [];
         });
     }
     generateColumnRules(dataTableSchema, selectedColumns, skipColumns) {
@@ -33,7 +33,9 @@ class SchemaOperationForSqlite {
         let tableSchema = dataTableSchema;
         if (skipColumns.length || selectedColumns.length) {
             tableSchema = tableSchema.filter(({ name }) => {
-                return selectedColumns.length ? selectedColumns.includes(name) : !skipColumns.includes(name);
+                return selectedColumns.length
+                    ? selectedColumns.includes(name)
+                    : !skipColumns.includes(name);
             });
         }
         tableSchema.forEach(({ name, type, notnull, dflt_value, pk }) => {
@@ -56,11 +58,15 @@ class SchemaOperationForSqlite {
                     columnRules.push('min:' + this.integerTypes.integer.min);
                     columnRules.push('max:' + this.integerTypes.integer.max);
                     break;
-                case dataType.includes('real') || dataType.includes('numeric') || dataType.includes('float'):
+                case dataType.includes('real') ||
+                    dataType.includes('numeric') ||
+                    dataType.includes('float'):
                     // Add more specific validation as needed
                     columnRules.push('numeric');
                     break;
-                case dataType === 'date' || dataType === 'time' || dataType === 'datetime':
+                case dataType === 'date' ||
+                    dataType === 'time' ||
+                    dataType === 'datetime':
                     columnRules.push('date');
                     break;
                 default:

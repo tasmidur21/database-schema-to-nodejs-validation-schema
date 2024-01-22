@@ -1,45 +1,50 @@
-import { createPool, Pool, PoolConnection, ConnectionConfig } from 'mysql2/promise';
-import { Database } from '../contacts/Database';
-import { errorMessage } from '../utils/messages';
+import {
+  createPool,
+  Pool,
+  PoolConnection,
+  ConnectionConfig,
+} from 'mysql2/promise'
+import { Database } from '../contacts/Database'
+import { errorMessage } from '../utils/messages'
 
-export class MySQLDatabase implements Database{
-  private pool: Pool;
-  private connection?: PoolConnection;
+export class MySQLDatabase implements Database {
+  private pool: Pool
+  private connection?: PoolConnection
 
   constructor(config: ConnectionConfig) {
-    this.pool = createPool(config);
+    this.pool = createPool(config)
   }
 
   async connect(): Promise<void> {
     try {
-      this.connection = await this.pool.getConnection();
-    } catch (error:any) {
-      throw error;
+      this.connection = await this.pool.getConnection()
+    } catch (error: any) {
+      throw error
     }
   }
 
   async query(sql: string): Promise<any> {
     try {
       if (this.connection) {
-        const [rows, fields] = await this.connection.query(sql);
-        return rows;
+        const [rows, fields] = await this.connection.query(sql)
+        return rows
       } else {
-        throw new Error(errorMessage('No valid connection available.'));
+        throw new Error(errorMessage('No valid connection available.'))
       }
-    } catch (error:any) {
-      throw error;
+    } catch (error: any) {
+      throw error
     }
   }
 
   async end(): Promise<void> {
     try {
       if (this.connection) {
-        this.connection.release();
+        this.connection.release()
       } else {
-        throw new Error(errorMessage('Connection is not available.'));
+        throw new Error(errorMessage('Connection is not available.'))
       }
-    } catch (error:any) {
-      throw error;
+    } catch (error: any) {
+      throw error
     }
   }
 }

@@ -1,5 +1,5 @@
-export interface IRequestSchemaGenerator{
-    /**
-     * buildAndStore  */
-     buildAndStore():any
+export interface IRequestSchemaGenerator {
+  /**
+   * buildAndStore  */
+  buildAndStore(): any
 }

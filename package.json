@@ -8,6 +8,7 @@
   },
   "main": "dist/cli.js",
   "scripts": {
+    "format": "prettier --write 'src/**/*.{js,ts}'",
     "clean": "rimraf dist/",
     "copy-files": "copyfiles -u 1 src/**/*.hbs dist/",
     "start": "node dist/cli.js",

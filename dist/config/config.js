@@ -28,5 +28,5 @@ const dotenv_1 = require("dotenv");
 const path = __importStar(require("path"));
 const validation_1 = require("../utils/validation");
 (0, dotenv_1.config)();
-const schemaConfig = require(path.join(process.cwd(), "/schema.config.js"));
+const schemaConfig = require(path.join(process.cwd(), '/schema.config.js'));
 exports.config = (0, validation_1.validateConfig)(schemaConfig);

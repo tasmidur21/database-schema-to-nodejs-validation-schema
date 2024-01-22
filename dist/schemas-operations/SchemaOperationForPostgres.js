@@ -20,11 +20,11 @@ class SchemaOperationForPostgres {
         };
     }
     getTableSchema(database, table) {
-        var _a;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
-            const tableExist = yield database.query(`SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '${table}');`);
-            if (!tableExist.length) {
-                throw new Error((0, messages_1.errorMessage)(`The ${table} table is exist!`));
+            const tableExist = yield database.query(`SELECT COUNT(table_name) as total_table FROM information_schema.tables WHERE table_name = '${table}';`);
+            if (((_a = tableExist.rows[0]) === null || _a === void 0 ? void 0 : _a.total_table) == undefined || ((_b = tableExist.rows[0]) === null || _b === void 0 ? void 0 : _b.total_table) == '0') {
+                throw new Error((0, messages_1.errorMessage)(`The ${table} table is not exist!`));
             }
             const result = yield database.query(`
                     SELECT table_name,column_name, data_type, character_maximum_length, is_nullable, column_default
@@ -34,7 +34,8 @@ class SchemaOperationForPostgres {
                     table_name = '${table}' 
                     ORDER BY ordinal_position ASC;
         `);
-            return (_a = result.rows) !== null && _a !== void 0 ? _a : [];
+            console.log(result.rows);
+            return (_c = result.rows) !== null && _c !== void 0 ? _c : [];
         });
     }
     generateColumnRules(dataTableSchema, selectedColumns, skipColumns) {
@@ -42,12 +43,14 @@ class SchemaOperationForPostgres {
         let tableSchema = dataTableSchema;
         if (skipColumns.length || selectedColumns.length) {
             tableSchema = tableSchema.filter(({ column_name }) => {
-                return selectedColumns.length ? selectedColumns.includes(column_name) : !skipColumns.includes(column_name);
+                return selectedColumns.length
+                    ? selectedColumns.includes(column_name)
+                    : !skipColumns.includes(column_name);
             });
         }
         tableSchema.forEach(({ table_name, column_name, data_type, character_maximum_length, is_nullable, column_default }) => {
             var _a;
-            if (column_default.includes('nextval')) {
+            if (column_default && column_default.includes('nextval')) {
                 return;
             }
             let columnRules = [];
