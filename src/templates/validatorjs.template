@@ -1,16 +1,13 @@
 import * as Validator from 'validatorjs';
 
-class {{ className }} {
+class  #__CLASS_NAME__# {
     constructor(formData) {
         this.formData = formData;
     }
 
     validate() {
-         const rules = {
-            {{#each rules}}
-            {{ @key }}: ['{{ this }}'],
-            {{/each}}
-        };
+         const rules =  #__RULES__#;
+         
 
         const validation = new Validator(this.formData, rules);
 
@@ -22,4 +19,4 @@ class {{ className }} {
         }
     }
 }
-module.exports = {{ className }};
+module.exports =  #__CLASS_NAME__#;

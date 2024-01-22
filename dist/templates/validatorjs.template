@@ -1,15 +1,13 @@
 import * as Validator from 'validatorjs';
 
-class AlbumRequestValidator {
+class  #__CLASS_NAME__# {
     constructor(formData) {
         this.formData = formData;
     }
 
     validate() {
-         const rules = {
-            Title: ['nullable,string,max:160'],
-            ArtistId: ['nullable,integer,min:-9223372036854775808,max:9223372036854775807'],
-        };
+         const rules =  #__RULES__#;
+         
 
         const validation = new Validator(this.formData, rules);
 
@@ -21,4 +19,4 @@ class AlbumRequestValidator {
         }
     }
 }
-module.exports = AlbumRequestValidator;
+module.exports =  #__CLASS_NAME__#;

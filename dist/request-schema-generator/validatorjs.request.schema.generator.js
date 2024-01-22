@@ -25,12 +25,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ValidatorJsRequestSchemaGenerator = void 0;
 const fs = __importStar(require("fs"));
-const Handlebars = __importStar(require("handlebars"));
 const path = __importStar(require("path"));
 const utils_1 = require("../utils/utils");
 const CLASS_NAME_SUFFIX = `{{className}}RequestValidator`;
 const basePath = `validators`;
-const templateSource = fs.readFileSync(path.resolve(__dirname, '../templates/validatorjs.template.hbs'), 'utf8');
+const templateSource = fs.readFileSync(path.resolve(__dirname, '../templates/validatorjs.template'), 'utf8');
 class ValidatorJsRequestSchemaGenerator {
     constructor(templateSetting) {
         var _a;
@@ -41,12 +40,16 @@ class ValidatorJsRequestSchemaGenerator {
         }, CLASS_NAME_SUFFIX);
     }
     buildAndStore() {
-        const template = Handlebars.compile(templateSource);
-        const content = template({
-            className: this.className,
-            rules: this.templateSetting.rules,
+        const content = (0, utils_1.buildTemplateContent)(templateSource, {
+            CLASS_NAME: this.className,
+            RULES: JSON.stringify(this.templateSetting.rules, null, 2),
         });
         return (0, utils_1.storeFile)(content, this.className, this.storeDir);
+    }
+    parse(rules) {
+        return Object.keys(rules).map((key) => {
+            return `${key}:[${rules[key]}]`;
+        }).join(',\n');
     }
 }
 exports.ValidatorJsRequestSchemaGenerator = ValidatorJsRequestSchemaGenerator;

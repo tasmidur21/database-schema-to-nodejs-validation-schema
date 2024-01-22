@@ -1,20 +1,18 @@
 import { templateSetting } from '../contacts/TemplateSetting'
 import * as fs from 'fs'
-import * as Handlebars from 'handlebars'
 import * as path from 'path'
 import { IRequestSchemaGenerator } from '../contacts/RequestSchemaGenerator'
 import {
-  buildTemplateContent,
-  getClassName,
-  snakeToCamel,
-  storeFile,
+    buildTemplateContent,
+    getClassName,
+    snakeToCamel,
+    storeFile,
 } from '../utils/utils'
-import { log } from 'console'
 
 const CLASS_NAME_SUFFIX = `{{className}}RequestValidator`
 const basePath = `validators`
 const templateSource = fs.readFileSync(
-  path.resolve(__dirname, '../templates/joi.template.hbs'),
+  path.resolve(__dirname, '../templates/joi.template'),
   'utf8',
 )
 
@@ -29,7 +27,7 @@ export class JoiRequestSchemaGenerator implements IRequestSchemaGenerator {
       {
         className: snakeToCamel(this.templateSetting.fileName),
       },
-      CLASS_NAME_SUFFIX,
+      CLASS_NAME_SUFFIX
     )
   }
   public buildAndStore(): any {

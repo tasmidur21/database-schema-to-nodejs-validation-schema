@@ -8,6 +8,7 @@ import { SchemaOperationForPostgres } from './schemas-operations/SchemaOperation
 import { SchemaOperationForSqlite } from './schemas-operations/SchemaOperationForSqlite'
 import { errorMessage } from './utils/messages'
 import {
+  REQUEST_VALIDATION_TYPE_ADONIS,
   REQUEST_VALIDATION_TYPE_JOI,
   REQUEST_VALIDATION_TYPE_VALIDATORJS,
 } from './utils/constants'
@@ -74,7 +75,7 @@ export class Executor {
       const templateSetting: templateSetting = {
         fileName: this.table,
         rules: rules,
-        templateType: REQUEST_VALIDATION_TYPE_JOI,
+        templateType: REQUEST_VALIDATION_TYPE_ADONIS,
         stroreDir: 'request-validators',
       }
 

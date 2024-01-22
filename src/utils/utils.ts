@@ -27,11 +27,11 @@ export const buildTemplateContent = (template: string, replacements: any) => {
   }, template)
 }
 
-export function storeFile(content: any, fileName: any, directory: string) {
+export function storeFile(content: any, fileName: any, directory: string,extention:any='js') {
   const fullPath = path.join(process.cwd(), directory)
   if (!fs.existsSync(fullPath)) {
     // If not, create the directory
     fs.mkdirSync(fullPath)
   }
-  return fs.writeFileSync(`${fullPath}/${fileName}.js`, content)
+  return fs.writeFileSync(`${fullPath}/${fileName}.${extention}`, content)
 }

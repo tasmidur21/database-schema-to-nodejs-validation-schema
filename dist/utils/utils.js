@@ -50,12 +50,12 @@ const buildTemplateContent = (template, replacements) => {
     }, template);
 };
 exports.buildTemplateContent = buildTemplateContent;
-function storeFile(content, fileName, directory) {
+function storeFile(content, fileName, directory, extention = 'js') {
     const fullPath = path.join(process.cwd(), directory);
     if (!fs.existsSync(fullPath)) {
         // If not, create the directory
         fs.mkdirSync(fullPath);
     }
-    return fs.writeFileSync(`${fullPath}/${fileName}.js`, content);
+    return fs.writeFileSync(`${fullPath}/${fileName}.${extention}`, content);
 }
 exports.storeFile = storeFile;

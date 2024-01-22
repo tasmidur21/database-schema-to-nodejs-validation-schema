@@ -29,7 +29,7 @@ const path = __importStar(require("path"));
 const utils_1 = require("../utils/utils");
 const CLASS_NAME_SUFFIX = `{{className}}RequestValidator`;
 const basePath = `validators`;
-const templateSource = fs.readFileSync(path.resolve(__dirname, '../templates/joi.template.hbs'), 'utf8');
+const templateSource = fs.readFileSync(path.resolve(__dirname, '../templates/joi.template'), 'utf8');
 class JoiRequestSchemaGenerator {
     constructor(templateSetting) {
         var _a;

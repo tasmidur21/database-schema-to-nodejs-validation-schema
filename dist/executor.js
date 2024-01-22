@@ -65,7 +65,7 @@ class Executor {
                 const templateSetting = {
                     fileName: this.table,
                     rules: rules,
-                    templateType: constants_1.REQUEST_VALIDATION_TYPE_JOI,
+                    templateType: constants_1.REQUEST_VALIDATION_TYPE_ADONIS,
                     stroreDir: 'request-validators',
                 };
                 new request_schema_generator_1.RequestSchemaGenerator(templateSetting);

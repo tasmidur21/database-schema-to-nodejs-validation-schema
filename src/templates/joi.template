@@ -6,7 +6,9 @@ class #__CLASS_NAME__# {
     }
 
     validate() {
-        const rules = Joi.object({#__RULES__#});
+        const rules = Joi.object({
+            #__RULES__#
+            });
 
         const validation = rules.validate(this.formData);
 
