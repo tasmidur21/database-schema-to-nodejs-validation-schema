@@ -1,10 +1,10 @@
-import { Database } from '../contacts/Database'
-import { Client as PostgresClient } from 'pg'
+import { IDatabase } from '../contacts/Database'
+import { Client as PostgresClient, ClientConfig } from 'pg'
 
-export class PostgresDatabase implements Database {
+export class PostgresDatabase implements IDatabase {
   private client: PostgresClient
 
-  constructor(config: any) {
+  constructor(config: ClientConfig) {
     this.client = new PostgresClient(config)
   }
 

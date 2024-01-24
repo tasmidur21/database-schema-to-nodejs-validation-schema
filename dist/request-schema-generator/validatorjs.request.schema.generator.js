@@ -40,16 +40,13 @@ class ValidatorJsRequestSchemaGenerator {
         }, CLASS_NAME_SUFFIX);
     }
     buildAndStore() {
+        const pasedRules = JSON.stringify(this.templateSetting.rules, null, 2);
         const content = (0, utils_1.buildTemplateContent)(templateSource, {
             CLASS_NAME: this.className,
-            RULES: JSON.stringify(this.templateSetting.rules, null, 2),
+            RULES: pasedRules,
         });
-        return (0, utils_1.storeFile)(content, this.className, this.storeDir);
-    }
-    parse(rules) {
-        return Object.keys(rules).map((key) => {
-            return `${key}:[${rules[key]}]`;
-        }).join(',\n');
+        (0, utils_1.storeFile)(content, this.className, this.storeDir);
+        return pasedRules;
     }
 }
 exports.ValidatorJsRequestSchemaGenerator = ValidatorJsRequestSchemaGenerator;

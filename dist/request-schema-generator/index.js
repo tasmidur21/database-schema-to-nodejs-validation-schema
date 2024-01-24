@@ -1,21 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RequestSchemaGenerator = void 0;
-const RequestSchemaClassMap_1 = require("../contacts/RequestSchemaClassMap");
+const constants_1 = require("../utils/constants");
 class RequestSchemaGenerator {
     constructor(templateSettings) {
-        this.templateType = templateSettings.templateType;
+        this.requestSchemaType = templateSettings.templateType;
         this.templateSettings = templateSettings;
-        this.initializeRequestSchemaGenerator(this.templateType, this.templateSettings).buildAndStore();
     }
     // Function to initialize a class based on the request validation type
-    initializeRequestSchemaGenerator(validationType, templateSetting) {
-        const RequestSchemaGeneratorClass = RequestSchemaClassMap_1.requestSchemaClassMap[validationType];
+    initializeRequestSchemaGenerator() {
+        const RequestSchemaGeneratorClass = constants_1.requestSchemaClassMap[this.requestSchemaType];
         if (RequestSchemaGeneratorClass) {
-            return new RequestSchemaGeneratorClass(templateSetting);
+            return new RequestSchemaGeneratorClass(this.templateSettings).buildAndStore();
         }
         else {
-            throw new Error(`Unsupported request validation type: ${validationType}`);
+            throw new Error(`Unsupported request validation type: ${String(this.requestSchemaType)}`);
         }
     }
 }

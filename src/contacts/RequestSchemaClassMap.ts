@@ -7,14 +7,10 @@ import {
   REQUEST_VALIDATION_TYPE_VALIDATORJS,
 } from '../utils/constants'
 
-export interface RequestSchemaClassMap {
+export interface IRequestSchemaClassMap {
   [REQUEST_VALIDATION_TYPE_ADONIS]: typeof AdonisRequestSchemaGenerator
   [REQUEST_VALIDATION_TYPE_JOI]: typeof JoiRequestSchemaGenerator
   [REQUEST_VALIDATION_TYPE_VALIDATORJS]: typeof ValidatorJsRequestSchemaGenerator
 }
 
-export const requestSchemaClassMap: RequestSchemaClassMap = {
-  [REQUEST_VALIDATION_TYPE_ADONIS]: AdonisRequestSchemaGenerator,
-  [REQUEST_VALIDATION_TYPE_JOI]: JoiRequestSchemaGenerator,
-  [REQUEST_VALIDATION_TYPE_VALIDATORJS]: ValidatorJsRequestSchemaGenerator,
-}
+

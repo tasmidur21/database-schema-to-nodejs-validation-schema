@@ -1,7 +1,10 @@
-import { errorMessage, warningMessage } from '../utils/messages'
-import { ValidationSchema } from '../contacts/ValidationRule'
+import { warningMessage } from '../utils/messages'
+import { ConnectionConfig } from 'mysql2/promise';
+import { MySQLDatabase } from '../databases/MySQLDatabase';
+import { ISchemaOperation } from '../contacts/SchemaOperationClassMap';
+import { IValidationSchema } from '../contacts/ValidationRule';
 
-export class SchemaOperationForMysql {
+export class SchemaOperationForMysql implements ISchemaOperation {
   public integerTypes: any = {
     tinyint: {
       unsigned: { min: '0', max: '255' },
@@ -35,27 +38,49 @@ export class SchemaOperationForMysql {
     },
   }
 
-  public async getTableSchema(database: any, table: string): Promise<any[]> {
-    const tableExist = await database.query(`SHOW TABLES LIKE '${table}';`)
-    if (!tableExist.length) {
-      throw new Error(warningMessage(`The ${table} table is not exist!`))
-    }
-    return (await database.query(`SHOW COLUMNS FROM ${table}`)) ?? []
+  private databaseConfig: ConnectionConfig;
+  private database: MySQLDatabase;
+  private table: string;
+  private selectedColumns: string[];
+  private skipColumns: string[]
+
+
+  constructor(table: string, databaseConfig: ConnectionConfig, selectedColumns: string[], skipColumns: string[]) {
+    this.table = table;
+    this.databaseConfig = databaseConfig;
+    this.database = new MySQLDatabase(this.databaseConfig);
+    this.selectedColumns = selectedColumns;
+    this.skipColumns = skipColumns;
   }
 
-  public generateColumnRules(
-    dataTableSchema: any[],
-    selectedColumns: string[],
-    skipColumns: string[],
-  ): ValidationSchema {
-    const rules: ValidationSchema = {}
-    let tableSchema = dataTableSchema
 
-    if (skipColumns.length || selectedColumns.length) {
+  private async getTableSchema(): Promise<any[]> {
+    await this.database.connect();
+    let schema: any[] = [];
+    try {
+      const tableExist = await this.database.query(`SHOW TABLES LIKE '${this.table}';`)
+      if (!tableExist.length) {
+        throw new Error(warningMessage(`The ${String(this.table)} table is not exist!`))
+      }
+      schema = (await this.database.query(`SHOW COLUMNS FROM ${String(this.table)}`)) ?? []
+    } catch (error: any) {
+      console.error(error.message)
+    } finally {
+      // Close the database connection
+      await this.database.end();
+    }
+    return schema;
+  }
+
+  public async generateColumnRules(): Promise<any> {
+    const rules: IValidationSchema = {}
+    let tableSchema = await this.getTableSchema()
+
+    if (this.skipColumns.length || this.selectedColumns.length) {
       tableSchema = tableSchema.filter(({ Field }) => {
-        return selectedColumns.length
-          ? selectedColumns.includes(Field)
-          : !skipColumns.includes(Field)
+        return this.selectedColumns.length
+          ? this.selectedColumns.includes(Field)
+          : !this.skipColumns.includes(Field)
       })
     }
 

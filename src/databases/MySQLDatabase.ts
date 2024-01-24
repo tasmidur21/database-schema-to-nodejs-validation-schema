@@ -4,10 +4,10 @@ import {
   PoolConnection,
   ConnectionConfig,
 } from 'mysql2/promise'
-import { Database } from '../contacts/Database'
+import { IDatabase } from '../contacts/Database'
 import { errorMessage } from '../utils/messages'
 
-export class MySQLDatabase implements Database {
+export class MySQLDatabase implements IDatabase {
   private pool: Pool
   private connection?: PoolConnection
 

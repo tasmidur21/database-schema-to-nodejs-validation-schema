@@ -1,32 +1,25 @@
 import {
-  RequestSchemaClassMap,
-  requestSchemaClassMap,
+  IRequestSchemaClassMap,
 } from '../contacts/RequestSchemaClassMap'
-import { templateSetting } from '../contacts/TemplateSetting'
+import { ITemplateSetting} from '../contacts/TemplateSetting'
+import { requestSchemaClassMap } from '../utils/constants'
 
 export class RequestSchemaGenerator {
-  private templateType: keyof RequestSchemaClassMap
-  private templateSettings: templateSetting
+  private requestSchemaType: keyof IRequestSchemaClassMap
+  private templateSettings: ITemplateSetting
 
-  constructor(templateSettings: templateSetting) {
-    this.templateType = templateSettings.templateType
+  constructor(templateSettings: ITemplateSetting) {
+    this.requestSchemaType = templateSettings.templateType
     this.templateSettings = templateSettings
-    this.initializeRequestSchemaGenerator(
-      this.templateType,
-      this.templateSettings,
-    ).buildAndStore()
   }
 
   // Function to initialize a class based on the request validation type
-  private initializeRequestSchemaGenerator(
-    validationType: keyof RequestSchemaClassMap,
-    templateSetting: templateSetting,
-  ): InstanceType<RequestSchemaClassMap[keyof RequestSchemaClassMap]> {
-    const RequestSchemaGeneratorClass = requestSchemaClassMap[validationType]
+  public initializeRequestSchemaGenerator(): InstanceType<IRequestSchemaClassMap[keyof IRequestSchemaClassMap]> {
+    const RequestSchemaGeneratorClass = requestSchemaClassMap[this.requestSchemaType]
     if (RequestSchemaGeneratorClass) {
-      return new RequestSchemaGeneratorClass(templateSetting)
+      return new RequestSchemaGeneratorClass(this.templateSettings).buildAndStore()
     } else {
-      throw new Error(`Unsupported request validation type: ${validationType}`)
+      throw new Error(`Unsupported request validation type: ${String(this.requestSchemaType)}`)
     }
   }
 }

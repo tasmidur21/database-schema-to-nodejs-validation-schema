@@ -79,7 +79,7 @@ class JoiRequestSchemaGenerator {
                     return rule;
                 })
                     .join('');
-                return `${key}:Joi${concatedRules},`;
+                return `${key}: Joi${concatedRules},`;
             })
                 .join('\n');
         };
@@ -90,11 +90,13 @@ class JoiRequestSchemaGenerator {
         }, CLASS_NAME_SUFFIX);
     }
     buildAndStore() {
+        const pasedRules = this.parse(this.templateSetting.rules);
         const content = (0, utils_1.buildTemplateContent)(templateSource, {
             CLASS_NAME: this.className,
-            RULES: this.parse(this.templateSetting.rules),
+            RULES: pasedRules
         });
-        return (0, utils_1.storeFile)(content, this.className, this.storeDir);
+        (0, utils_1.storeFile)(content, this.className, this.storeDir);
+        return pasedRules;
     }
 }
 exports.JoiRequestSchemaGenerator = JoiRequestSchemaGenerator;

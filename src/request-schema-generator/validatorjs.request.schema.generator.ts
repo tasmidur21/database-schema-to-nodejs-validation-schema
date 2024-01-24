@@ -1,6 +1,5 @@
-import { templateSetting } from '../contacts/TemplateSetting'
+import { ITemplateSetting } from '../contacts/TemplateSetting'
 import * as fs from 'fs'
-import * as Handlebars from 'handlebars'
 import * as path from 'path'
 import { IRequestSchemaGenerator } from '../contacts/RequestSchemaGenerator'
 import { buildTemplateContent, getClassName, snakeToCamel, storeFile } from '../utils/utils'
@@ -15,10 +14,10 @@ const templateSource = fs.readFileSync(
 export class ValidatorJsRequestSchemaGenerator
   implements IRequestSchemaGenerator
 {
-  private templateSetting: templateSetting
+  private templateSetting: ITemplateSetting
   private className: string
   private storeDir: string
-  constructor(templateSetting: templateSetting) {
+  constructor(templateSetting: ITemplateSetting) {
     this.templateSetting = templateSetting
     this.storeDir = templateSetting?.stroreDir ?? basePath
     this.className = getClassName(
@@ -29,16 +28,12 @@ export class ValidatorJsRequestSchemaGenerator
     )
   }
   public buildAndStore(): any {
+    const pasedRules=JSON.stringify(this.templateSetting.rules,null,2);
     const content = buildTemplateContent(templateSource, {
         CLASS_NAME: this.className,
-        RULES:JSON.stringify(this.templateSetting.rules,null,2),
+        RULES:pasedRules,
       })
-    return storeFile(content, this.className, this.storeDir)
+    storeFile(content, this.className, this.storeDir)
+    return pasedRules;
   }
-  private parse(rules:any){
-      return Object.keys(rules).map((key:string)=>{
-        return `${key}:[${rules[key]}]`;
-      }).join(',\n')
-  }
-
 }

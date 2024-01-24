@@ -11,70 +11,43 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Executor = void 0;
 const config_1 = require("./config/config");
-const MySQLDatabase_1 = require("./databases/MySQLDatabase");
-const PostgresDatabase_1 = require("./databases/PostgresDatabase");
-const SqliteDatabase_1 = require("./databases/SqliteDatabase");
-const SchemaOperationForMysql_1 = require("./schemas-operations/SchemaOperationForMysql");
-const SchemaOperationForPostgres_1 = require("./schemas-operations/SchemaOperationForPostgres");
-const SchemaOperationForSqlite_1 = require("./schemas-operations/SchemaOperationForSqlite");
-const messages_1 = require("./utils/messages");
 const constants_1 = require("./utils/constants");
 const request_schema_generator_1 = require("./request-schema-generator");
+const messages_1 = require("./utils/messages");
 class Executor {
     constructor(table, databaseType, options) {
-        var _a;
+        var _a, _b, _c;
+        this.skipColumns = [];
+        this.selectedColumns = [];
         this.table = table;
         this.databaseType = databaseType !== null && databaseType !== void 0 ? databaseType : config_1.config.defaultDatabase;
         this.databaseConfig = config_1.config.databases[this.databaseType];
-        this.skipColumns = (_a = config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.skipColumns) !== null && _a !== void 0 ? _a : [];
+        let skipColumns = (_a = config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.skipColumns) !== null && _a !== void 0 ? _a : [];
         this.options = options;
+        if (this.options &&
+            ((_b = this.options) === null || _b === void 0 ? void 0 : _b.columns) &&
+            this.options.columns.length > 0) {
+            this.selectedColumns = (_c = this.options) === null || _c === void 0 ? void 0 : _c.columns;
+            this.skipColumns = skipColumns.filter((skipColumn) => { var _a; return !((_a = this.options) === null || _a === void 0 ? void 0 : _a.columns.includes(skipColumn)); });
+        }
     }
     execute() {
-        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            let database;
-            let operation;
-            if (this.databaseType === 'postgres') {
-                database = new PostgresDatabase_1.PostgresDatabase(this.databaseConfig);
-                operation = new SchemaOperationForPostgres_1.SchemaOperationForPostgres();
-            }
-            else if (this.databaseType === 'mysql') {
-                database = new MySQLDatabase_1.MySQLDatabase(this.databaseConfig);
-                operation = new SchemaOperationForMysql_1.SchemaOperationForMysql();
-            }
-            else if (this.databaseType === 'sqlite') {
-                database = new SqliteDatabase_1.SqliteDatabase(this.databaseConfig);
-                operation = new SchemaOperationForSqlite_1.SchemaOperationForSqlite();
-            }
-            else {
-                console.error((0, messages_1.errorMessage)('Invalid database type. Please use "postgres","mysql" and sqlite.'));
-                return;
-            }
             try {
-                yield database.connect();
-                let tableSchema = yield operation.getTableSchema(database, this.table);
-                let skipColumns = [];
-                let selectedColumns = [];
-                if (this.options &&
-                    ((_a = this.options) === null || _a === void 0 ? void 0 : _a.columns) &&
-                    this.options.columns.length > 0) {
-                    selectedColumns = (_b = this.options) === null || _b === void 0 ? void 0 : _b.columns;
-                    skipColumns = this.skipColumns.filter((skipColumn) => { var _a; return !((_a = this.options) === null || _a === void 0 ? void 0 : _a.columns.includes(skipColumn)); });
-                }
-                const rules = operation.generateColumnRules(tableSchema, selectedColumns, skipColumns);
+                const columnRules = yield this.initializeSchemaOperation().generateColumnRules();
                 const templateSetting = {
                     fileName: this.table,
-                    rules: rules,
-                    templateType: constants_1.REQUEST_VALIDATION_TYPE_ADONIS,
+                    rules: columnRules,
+                    templateType: constants_1.REQUEST_VALIDATION_TYPE_JOI,
                     stroreDir: 'request-validators',
                 };
-                new request_schema_generator_1.RequestSchemaGenerator(templateSetting);
+                const rules = new request_schema_generator_1.RequestSchemaGenerator(templateSetting).initializeRequestSchemaGenerator();
                 console.log('\n');
                 console.log(`🚀 Schema Base Validation rules for "${this.table}" table generated! 🚀`);
                 console.log(`Copy and paste these rules into your validation location, such as controller, form request, or any applicable place 😊`);
                 console.log('______________________________________________________________________________________________________________________');
                 console.log('\n');
-                console.log(rules);
+                console.log((0, messages_1.successMessage)(rules));
                 console.log('\n');
             }
             catch (error) {
@@ -82,10 +55,19 @@ class Executor {
             }
             finally {
                 // Close the database connection
-                database.end();
                 process.exit();
             }
         });
+    }
+    // Function to initialize a class based on the request validation type
+    initializeSchemaOperation() {
+        const SchemaOperationClass = constants_1.schemaOperationClass[this.databaseType];
+        if (SchemaOperationClass) {
+            return new SchemaOperationClass(this.table, this.databaseConfig, this.selectedColumns, this.skipColumns);
+        }
+        else {
+            throw new Error(`Unsupported request validation type: ${this.databaseType}`);
+        }
     }
 }
 exports.Executor = Executor;

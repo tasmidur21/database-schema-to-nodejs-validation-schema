@@ -7,7 +7,7 @@ export const errorMessage = (msg: string) => {
   return `${red}${msg}${reset}`
 }
 
-export const successMessage = (msg: string) => {
+export const successMessage = (msg: any) => {
   return `${green}${msg}${reset}`
 }
 

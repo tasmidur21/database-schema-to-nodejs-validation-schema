@@ -1,7 +1,7 @@
 import * as sqlite3 from 'sqlite3'
-import { Database } from '../contacts/Database'
+import { IDatabase } from '../contacts/Database'
 
-export class SqliteDatabase implements Database {
+export class SqliteDatabase implements IDatabase {
   private db: sqlite3.Database
 
   constructor(config: any) {

@@ -1,5 +1,7 @@
 import { errorMessage } from '../utils/messages'
-import { ValidationSchema } from '../contacts/ValidationRule'
+import { IValidationSchema } from '../contacts/ValidationRule'
+import { PostgresDatabase } from '../databases/PostgresDatabase';
+import { ClientConfig } from 'pg';
 
 export class SchemaOperationForPostgres {
   public integerTypes: any = {
@@ -8,40 +10,58 @@ export class SchemaOperationForPostgres {
     bigint: { min: '-9223372036854775808', max: '9223372036854775807' },
   }
 
-  public async getTableSchema(database: any, table: string): Promise<any[]> {
-    const tableExist = await database.query(
-      `SELECT COUNT(table_name) as total_table FROM information_schema.tables WHERE table_name = '${table}';`,
-    )
-    if (tableExist.rows[0]?.total_table==undefined||tableExist.rows[0]?.total_table=='0') {
-      throw new Error(errorMessage(`The ${table} table is not exist!`))
-    }
+  private databaseConfig: ClientConfig;
+  private database: PostgresDatabase;
+  private table: string;
+  private selectedColumns: string[];
+  private skipColumns: string[]
 
-    const result = await database.query(`
-                    SELECT table_name,column_name, data_type, character_maximum_length, is_nullable, column_default
-                    FROM 
-                    information_schema.columns
-                    WHERE 
-                    table_name = '${table}' 
-                    ORDER BY ordinal_position ASC;
-        `)
-    console.log(result.rows);
-    
-    return result.rows ?? []
+
+  constructor(table: string, databaseConfig: ClientConfig, selectedColumns: string[], skipColumns: string[]) {
+    this.table = table;
+    this.databaseConfig = databaseConfig;
+    this.database = new PostgresDatabase(this.databaseConfig);
+    this.selectedColumns = selectedColumns;
+    this.skipColumns = skipColumns;
   }
 
-  public generateColumnRules(
-    dataTableSchema: any[],
-    selectedColumns: string[],
-    skipColumns: string[],
-  ): ValidationSchema {
-    const rules: ValidationSchema = {}
-    let tableSchema = dataTableSchema
+  private async getTableSchema(): Promise<any[]> {
+    await this.database.connect();
+    let schema: any;
+    try {
+      const tableExist = await this.database.query(
+        `SELECT COUNT(table_name) as total_table FROM information_schema.tables WHERE table_name = '${this.table}';`,
+      )
+      if (tableExist.rows[0]?.total_table==undefined||tableExist.rows[0]?.total_table=='0') {
+        throw new Error(errorMessage(`The ${this.table} table is not exist!`))
+      }
+      schema = await this.database.query(`
+                      SELECT table_name,column_name, data_type, character_maximum_length, is_nullable, column_default
+                      FROM 
+                      information_schema.columns
+                      WHERE 
+                      table_name = '${this.table}' 
+                      ORDER BY ordinal_position ASC;
+          `);  
 
-    if (skipColumns.length || selectedColumns.length) {
+    } catch (error: any) {
+      console.error(error.message)
+    } finally {
+      // Close the database connection
+      await this.database.end();
+    }
+    return schema?.rows??[];
+  }
+
+  public async generateColumnRules(): Promise<any> {
+    const rules: IValidationSchema = {}
+    let tableSchema = await this.getTableSchema()
+
+    if (this.skipColumns.length || this.selectedColumns.length) {
       tableSchema = tableSchema.filter(({ column_name }) => {
-        return selectedColumns.length
-          ? selectedColumns.includes(column_name)
-          : !skipColumns.includes(column_name)
+        return this.selectedColumns.length
+          ? this.selectedColumns.includes(column_name)
+          : !this.skipColumns.includes(column_name)
       })
     }
 

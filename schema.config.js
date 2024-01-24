@@ -21,5 +21,6 @@ const schemaConfig = {
       },
     },
     skipColumns: (process.env.SKIP_COLUMNS || 'created_at,updated_at,deleted_at').split(','),
+    requestValidatorPath:`request-validators`
   };
   module.exports = schemaConfig;

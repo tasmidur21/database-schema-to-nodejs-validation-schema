@@ -1,37 +1,53 @@
 import { errorMessage } from '../utils/messages'
-import { ValidationSchema } from '../contacts/ValidationRule'
+import { IValidationSchema } from '../contacts/ValidationRule'
+import { SqliteDatabase } from '../databases/SqliteDatabase';
 
 export class SchemaOperationForSqlite {
   public integerTypes: any = {
     integer: { min: '-9223372036854775808', max: '9223372036854775807' },
   }
 
-  public async getTableSchema(database: any, table: string): Promise<any[]> {
-    const tableExist = await database.query(
-      `SELECT name FROM sqlite_master WHERE type='table' AND name='${table}';`,
-    )
-    console.log(tableExist)
+  private databaseConfig: any;
+  private database: SqliteDatabase;
+  private table: string;
+  private selectedColumns: string[];
+  private skipColumns: string[]
 
-    if (!tableExist.length) {
-      throw new Error(errorMessage(`The ${table} table is not exist!`))
-    }
 
-    return (await database.query(`PRAGMA table_info('${table}')`)) ?? []
+  constructor(table: string, databaseConfig: any, selectedColumns: string[], skipColumns: string[]) {
+    this.table = table;
+    this.databaseConfig = databaseConfig;
+    this.database = new SqliteDatabase(this.databaseConfig);
+    this.selectedColumns = selectedColumns;
+    this.skipColumns = skipColumns;
   }
 
-  public generateColumnRules(
-    dataTableSchema: any[],
-    selectedColumns: string[],
-    skipColumns: string[],
-  ): ValidationSchema {
-    const rules: ValidationSchema = {}
-    let tableSchema = dataTableSchema
+  private async getTableSchema(): Promise<any[]> {
+    await this.database.connect();
+    let schema: any[] = [];
+    try {
+      const tableExist = await this.database.query(`SELECT name FROM sqlite_master WHERE type='table' AND name='${this.table}';`) 
+      if (!tableExist.length) {
+        throw new Error(errorMessage(`The ${this.table} table is not exist!`))
+      }
+      schema= (await this.database.query(`PRAGMA table_info('${this.table}')`)) ?? []
+    } catch (error: any) {
+      console.error(error.message)
+    } finally {
+      // Close the database connection
+      await this.database.end();
+    }
+    return schema;
+  }
 
-    if (skipColumns.length || selectedColumns.length) {
+  public async generateColumnRules(): Promise<any> {
+    const rules: IValidationSchema = {}
+    let tableSchema = await this.getTableSchema();  
+    if (this.skipColumns.length || this.selectedColumns.length) {
       tableSchema = tableSchema.filter(({ name }) => {
-        return selectedColumns.length
-          ? selectedColumns.includes(name)
-          : !skipColumns.includes(name)
+        return this.selectedColumns.length
+          ? this.selectedColumns.includes(name)
+          : !this.skipColumns.includes(name)
       })
     }
 

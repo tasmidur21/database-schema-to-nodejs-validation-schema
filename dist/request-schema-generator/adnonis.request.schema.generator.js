@@ -79,7 +79,7 @@ class AdonisRequestSchemaGenerator {
                     return rule;
                 })
                     .join('');
-                return `${key}:schema${concatedRules},`;
+                return `   ${key}: schema${concatedRules},`;
             })
                 .join('\n');
         };
@@ -90,11 +90,13 @@ class AdonisRequestSchemaGenerator {
         }, CLASS_NAME_SUFFIX);
     }
     buildAndStore() {
+        const pasedRules = this.parse(this.templateSetting.rules);
         const content = (0, utils_1.buildTemplateContent)(templateSource, {
             CLASS_NAME: this.className,
-            RULES: this.parse(this.templateSetting.rules),
+            RULES: pasedRules
         });
-        return (0, utils_1.storeFile)(content, this.className, this.storeDir, "ts");
+        (0, utils_1.storeFile)(content, this.className, this.storeDir, "ts");
+        return pasedRules;
     }
 }
 exports.AdonisRequestSchemaGenerator = AdonisRequestSchemaGenerator;

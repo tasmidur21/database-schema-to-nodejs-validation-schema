@@ -1,4 +1,4 @@
-import { templateSetting } from '../contacts/TemplateSetting'
+import { ITemplateSetting } from '../contacts/TemplateSetting'
 import * as fs from 'fs'
 import * as path from 'path'
 import { IRequestSchemaGenerator } from '../contacts/RequestSchemaGenerator'
@@ -17,10 +17,10 @@ const templateSource = fs.readFileSync(
 )
 
 export class AdonisRequestSchemaGenerator implements IRequestSchemaGenerator {
-  private templateSetting: templateSetting
+  private templateSetting: ITemplateSetting
   private className: string
   private storeDir: string
-  constructor(templateSetting: templateSetting) {
+  constructor(templateSetting: ITemplateSetting) {
     this.templateSetting = templateSetting
     this.storeDir = templateSetting?.stroreDir ?? basePath
     this.className = getClassName(
@@ -31,11 +31,13 @@ export class AdonisRequestSchemaGenerator implements IRequestSchemaGenerator {
     )
   }
   public buildAndStore(): any {
+    const pasedRules=this.parse(this.templateSetting.rules)
     const content = buildTemplateContent(templateSource, {
       CLASS_NAME: this.className,
-      RULES: this.parse(this.templateSetting.rules),
+      RULES: pasedRules
     })
-    return storeFile(content, this.className, this.storeDir,"ts");
+    storeFile(content, this.className, this.storeDir,"ts");
+    return pasedRules;
   }
 
   private parse = (rules: any) => {
@@ -83,7 +85,7 @@ export class AdonisRequestSchemaGenerator implements IRequestSchemaGenerator {
             return rule
           })
           .join('')
-        return `${key}:schema${concatedRules},`
+        return `   ${key}: schema${concatedRules},`
       })
       .join('\n')
   }

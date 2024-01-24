@@ -1,8 +1,8 @@
-import { RequestSchemaClassMap } from './RequestSchemaClassMap'
+import { IRequestSchemaClassMap } from './RequestSchemaClassMap'
 
-export interface templateSetting {
+export interface ITemplateSetting {
   fileName: string
   rules: string[]
-  templateType: keyof RequestSchemaClassMap
+  templateType: keyof IRequestSchemaClassMap
   stroreDir?: string
 }

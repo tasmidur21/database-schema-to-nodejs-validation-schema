@@ -2,13 +2,14 @@
     "compilerOptions": {
         "target": "es6",
         "module": "commonjs",
-        "outDir": "./dist",
-        "rootDir": "./src",
         "strict": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "resolveJsonModule": true,
         "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "outDir": "./dist",
+        "baseUrl": "./",
         "plugins": [
             {
                 "transform": "dotenv/config"
@@ -17,11 +18,12 @@
     },
     "include": [
         "src/**/*.ts",
-        "src/**/*.js",
         "src/**/*.d.ts",
-        "src/**/*.tsx"],
+        "src/**/*.tsx",
+        "tests/**/*.ts"
+    ],
     "exclude": [
         "node_modules",
-        "**/*.spec.ts"
+        "**/*.test.ts"
     ]
 }
