@@ -9,7 +9,7 @@ import { errorMessage } from '../utils/messages'
 
 export class MySQLDatabase implements IDatabase {
   private pool: Pool
-  private connection?: PoolConnection
+  private connection: any
 
   constructor(config: ConnectionConfig) {
     this.pool = createPool(config)

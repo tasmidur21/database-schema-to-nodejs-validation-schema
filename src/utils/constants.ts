@@ -4,14 +4,16 @@ import { ISchemaOperationClassMap } from "../contacts/SchemaOperationClassMap";
 import { MySQLDatabase } from "../databases/MySQLDatabase";
 import { PostgresDatabase } from "../databases/PostgresDatabase";
 import { SqliteDatabase } from "../databases/SqliteDatabase";
-import { AdonisRequestSchemaGenerator } from "../request-schema-generator/adnonis.request.schema.generator";
+import { VineRequestSchemaGenerator } from "../request-schema-generator/vine.request.schema.generator";
 import { JoiRequestSchemaGenerator } from "../request-schema-generator/joi.request.schema.generator";
 import { ValidatorJsRequestSchemaGenerator } from "../request-schema-generator/validatorjs.request.schema.generator";
 import { SchemaOperationForMysql } from "../schemas-operations/SchemaOperationForMysql";
 import { SchemaOperationForPostgres } from "../schemas-operations/SchemaOperationForPostgres";
 import { SchemaOperationForSqlite } from "../schemas-operations/SchemaOperationForSqlite";
 
-export const REQUEST_VALIDATION_TYPE_ADONIS = 'adonis'
+export const CLASS_NAME_SUFFIX = `{{className}}RequestValidator`
+
+export const REQUEST_VALIDATION_TYPE_VINE = 'vine'
 export const REQUEST_VALIDATION_TYPE_JOI = 'joi'
 export const REQUEST_VALIDATION_TYPE_VALIDATORJS = 'validatorjs'
 
@@ -32,7 +34,7 @@ export const databaseClassMap:IDatabaseBaseClassMap={
 }
 
 export const requestSchemaClassMap: IRequestSchemaClassMap = {
-    [REQUEST_VALIDATION_TYPE_ADONIS]: AdonisRequestSchemaGenerator,
+    [REQUEST_VALIDATION_TYPE_VINE]: VineRequestSchemaGenerator,
     [REQUEST_VALIDATION_TYPE_JOI]: JoiRequestSchemaGenerator,
     [REQUEST_VALIDATION_TYPE_VALIDATORJS]: ValidatorJsRequestSchemaGenerator,
 }

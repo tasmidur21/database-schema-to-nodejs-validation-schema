@@ -6,7 +6,6 @@ class Database {
     constructor(databaeTpe, databaseConfig) {
         this.databaseType = databaeTpe;
         this.databaseConfig = databaseConfig;
-        this.init();
     }
     // Function to initialize a class based on the request validation type
     init() {

@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -14,21 +37,30 @@ const config_1 = require("./config/config");
 const constants_1 = require("./utils/constants");
 const request_schema_generator_1 = require("./request-schema-generator");
 const messages_1 = require("./utils/messages");
+const path = __importStar(require("path"));
 class Executor {
     constructor(table, databaseType, options) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d, _e, _f;
         this.skipColumns = [];
         this.selectedColumns = [];
         this.table = table;
         this.databaseType = databaseType !== null && databaseType !== void 0 ? databaseType : config_1.config.defaultDatabase;
         this.databaseConfig = config_1.config.databases[this.databaseType];
-        let skipColumns = (_a = config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.skipColumns) !== null && _a !== void 0 ? _a : [];
         this.options = options;
+        this.skipColumns = config_1.config.skipColumns;
+        this.templateType = (_b = (_a = this.options) === null || _a === void 0 ? void 0 : _a.validationSchemaType) !== null && _b !== void 0 ? _b : config_1.config.validationSchemaType;
+        this.requestFile = this.table;
+        this.stroreDir = config_1.config.requestValidatorPath;
+        if ((_c = this.options) === null || _c === void 0 ? void 0 : _c.requestFile) {
+            const filePath = (_d = this.options) === null || _d === void 0 ? void 0 : _d.requestFile;
+            this.requestFile = path.basename(filePath);
+            this.stroreDir = path.dirname(filePath);
+        }
         if (this.options &&
-            ((_b = this.options) === null || _b === void 0 ? void 0 : _b.columns) &&
+            ((_e = this.options) === null || _e === void 0 ? void 0 : _e.columns) &&
             this.options.columns.length > 0) {
-            this.selectedColumns = (_c = this.options) === null || _c === void 0 ? void 0 : _c.columns;
-            this.skipColumns = skipColumns.filter((skipColumn) => { var _a; return !((_a = this.options) === null || _a === void 0 ? void 0 : _a.columns.includes(skipColumn)); });
+            this.selectedColumns = (_f = this.options) === null || _f === void 0 ? void 0 : _f.columns;
+            this.skipColumns = this.skipColumns.filter((skipColumn) => { var _a; return !((_a = this.options) === null || _a === void 0 ? void 0 : _a.columns.includes(skipColumn)); });
         }
     }
     execute() {
@@ -36,10 +68,10 @@ class Executor {
             try {
                 const columnRules = yield this.initializeSchemaOperation().generateColumnRules();
                 const templateSetting = {
-                    fileName: this.table,
+                    fileName: this.requestFile,
                     rules: columnRules,
-                    templateType: constants_1.REQUEST_VALIDATION_TYPE_JOI,
-                    stroreDir: 'request-validators',
+                    templateType: this.templateType,
+                    stroreDir: this.stroreDir,
                 };
                 const rules = new request_schema_generator_1.RequestSchemaGenerator(templateSetting).initializeRequestSchemaGenerator();
                 console.log('\n');
@@ -54,9 +86,8 @@ class Executor {
                 console.error(error.message);
             }
             finally {
-                // Close the database connection
-                process.exit();
             }
+            return true;
         });
     }
     // Function to initialize a class based on the request validation type

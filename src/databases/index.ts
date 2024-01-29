@@ -9,8 +9,7 @@ export class Database{
 
     constructor(databaeTpe:(keyof IDatabaseBaseClassMap),databaseConfig: IDatabaseConfig) {
         this.databaseType=databaeTpe;
-		this.databaseConfig = databaseConfig;
-        this.init();
+		    this.databaseConfig = databaseConfig;
 	}
       // Function to initialize a class based on the request validation type
    public init(): InstanceType<IDatabaseBaseClassMap[keyof IDatabaseBaseClassMap]> {

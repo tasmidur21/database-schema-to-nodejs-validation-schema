@@ -4,5 +4,5 @@ export interface ITemplateSetting {
   fileName: string
   rules: string[]
   templateType: keyof IRequestSchemaClassMap
-  stroreDir?: string
+  stroreDir?: any
 }

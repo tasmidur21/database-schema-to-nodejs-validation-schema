@@ -8,9 +8,8 @@ import {
     snakeToCamel,
     storeFile,
 } from '../utils/utils'
+import { CLASS_NAME_SUFFIX } from '../utils/constants'
 
-const CLASS_NAME_SUFFIX = `{{className}}RequestValidator`
-const basePath = `validators`
 const templateSource = fs.readFileSync(
   path.resolve(__dirname, '../templates/joi.template'),
   'utf8',
@@ -18,28 +17,31 @@ const templateSource = fs.readFileSync(
 
 export class JoiRequestSchemaGenerator implements IRequestSchemaGenerator {
   private templateSetting: ITemplateSetting
-  private className: string
-  private storeDir: string
+  private className: any
+  private storeDir: any
   constructor(templateSetting: ITemplateSetting) {
     this.templateSetting = templateSetting
-    this.storeDir = templateSetting?.stroreDir ?? basePath
-    this.className = getClassName(
-      {
-        className: snakeToCamel(this.templateSetting.fileName),
-      },
-      CLASS_NAME_SUFFIX
-    )
+    this.storeDir = templateSetting?.stroreDir
+    if (this.templateSetting?.fileName) {
+      this.className = getClassName(
+        {
+          className: snakeToCamel(this.templateSetting.fileName),
+        },
+        CLASS_NAME_SUFFIX
+      )
+    }
   }
   public buildAndStore(): any {
-    const pasedRules=this.parse(this.templateSetting.rules)
-    const content = buildTemplateContent(templateSource, {
-      CLASS_NAME: this.className,
-      RULES: pasedRules
-    })
-    storeFile(content, this.className, this.storeDir)
+    const pasedRules = this.parse(this.templateSetting.rules)
+    if (this.storeDir && this.className) {
+      const content = buildTemplateContent(templateSource, {
+        CLASS_NAME: this.className,
+        RULES: pasedRules,
+      })
+      storeFile(content, this.className, this.storeDir)
+    }
     return pasedRules;
   }
-
   private parse = (rules: any) => {
     return Object.keys(rules)
       .map((key: string) => {

@@ -13,16 +13,17 @@ commander_1.program
     .command('schema:make-rules')
     .addOption(new commander_1.Option('-db, --database <database>', 'Specify the database').choices([constants_1.DATABASE_MYSQL, constants_1.DATABASE_POSTGRES, constants_1.DATABASE_SQLITE]))
     .option('-c, --columns <columns>', 'Specify the column name of the table')
-    .addOption(new commander_1.Option('-crf, --create-request-for [create-request-for]', 'The request validation file type').choices([constants_1.REQUEST_VALIDATION_TYPE_JOI, constants_1.REQUEST_VALIDATION_TYPE_VALIDATORJS, constants_1.REQUEST_VALIDATION_TYPE_ADONIS]))
+    .addOption(new commander_1.Option('-rv, --request-validation [request-validation]', 'The request validation file type').choices([constants_1.REQUEST_VALIDATION_TYPE_JOI, constants_1.REQUEST_VALIDATION_TYPE_VALIDATORJS, constants_1.REQUEST_VALIDATION_TYPE_VINE]))
     .option('-rf, --request-file <request-file>', 'Specify the request validator file name')
     .requiredOption('-t, --table <table>', 'Specify the table name')
     .action((cmd) => {
-    const { table, database, columns = "", createRequest, requestFile } = cmd;
+    const { table, database, columns = "", requestValidation, requestFile } = cmd;
     const options = {
         columns: columns.split(',').filter(Boolean),
-        createRequest,
+        validationSchemaType: requestValidation,
         requestFile
     };
     new executor_1.Executor(table, database, options).execute();
+    //process.exit()
 });
 commander_1.program.parse(process.argv);

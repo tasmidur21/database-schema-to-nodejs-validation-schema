@@ -1,10 +1,23 @@
-// tests/sum.test.ts
+import { databaseInt } from "../src/examples/dbinit";
+import { DATABASE_MYSQL, DATABASE_POSTGRES, DATABASE_SQLITE } from "../src/utils/constants";
 
-
-test.only('adds 1 + 2 to equal 3', () => {
-  expect("test").toBe("test");
+test.only('Sqlite database connection check', async () => {
+  const connection=await databaseInt(DATABASE_SQLITE);
+  expect(connection).toBeTruthy()
 });
 
-test('another test', () => {
-  // This test won't be executed when using `test.only`
+test.only('MySQL database connection check', async () => {
+  const connection=await databaseInt(DATABASE_MYSQL);
+  expect(connection).toBeTruthy()
 });
+
+test.only('Postgres database connection check', async () => {
+  const connection=await databaseInt(DATABASE_POSTGRES);
+  expect(connection).toBeTruthy()
+});
+
+
+
+
+
+

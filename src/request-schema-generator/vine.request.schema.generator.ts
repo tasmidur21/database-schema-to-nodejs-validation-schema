@@ -3,40 +3,44 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { IRequestSchemaGenerator } from '../contacts/RequestSchemaGenerator'
 import {
-    buildTemplateContent,
-    getClassName,
-    snakeToCamel,
-    storeFile,
+  buildTemplateContent,
+  getClassName,
+  snakeToCamel,
+  storeFile,
 } from '../utils/utils'
 
-const CLASS_NAME_SUFFIX = `{{className}}RequestValidator`
-const basePath = `validators`
+import { CLASS_NAME_SUFFIX } from '../utils/constants'
+
 const templateSource = fs.readFileSync(
-  path.resolve(__dirname, '../templates/adonis.template'),
+  path.resolve(__dirname, '../templates/vine.template'),
   'utf8',
 )
 
-export class AdonisRequestSchemaGenerator implements IRequestSchemaGenerator {
+export class VineRequestSchemaGenerator implements IRequestSchemaGenerator {
   private templateSetting: ITemplateSetting
-  private className: string
-  private storeDir: string
+  private className: any
+  private storeDir: any
   constructor(templateSetting: ITemplateSetting) {
     this.templateSetting = templateSetting
-    this.storeDir = templateSetting?.stroreDir ?? basePath
-    this.className = getClassName(
-      {
-        className: snakeToCamel(this.templateSetting.fileName),
-      },
-      CLASS_NAME_SUFFIX
-    )
+    this.storeDir = templateSetting?.stroreDir
+    if (this.templateSetting?.fileName) {
+      this.className = getClassName(
+        {
+          className: snakeToCamel(this.templateSetting.fileName),
+        },
+        CLASS_NAME_SUFFIX
+      )
+    }
   }
   public buildAndStore(): any {
-    const pasedRules=this.parse(this.templateSetting.rules)
-    const content = buildTemplateContent(templateSource, {
-      CLASS_NAME: this.className,
-      RULES: pasedRules
-    })
-    storeFile(content, this.className, this.storeDir,"ts");
+    const pasedRules = this.parse(this.templateSetting.rules)
+    if (this.storeDir && this.className) {
+      const content = buildTemplateContent(templateSource, {
+        CLASS_NAME: this.className,
+        RULES: pasedRules,
+      })
+      storeFile(content, this.className, this.storeDir)
+    }
     return pasedRules;
   }
 
@@ -63,29 +67,31 @@ export class AdonisRequestSchemaGenerator implements IRequestSchemaGenerator {
               case _item.includes('bool'):
                 rule = '.boolean()'
                 break
+              case _item.includes('in'):
+                const value = _item.split(':')[1].split(",").join(",")
+                rule = `.enum([${value}])`
+                break
               case _item.includes('max'): {
                 const value = _item.split(':')[1] ?? 1
-                rule = `.max(${value})`
+                rule = `.maxLength(${value})`
                 break
               }
               case _item.includes('min'): {
                 const value = _item.split(':')[1] ?? 1
-                rule = `.min(${value})`
+                rule = `.minLength(${value})`
                 break
               }
-              case _item.includes('required'):
-                rule = '.required()'
-                break
               case _item.includes('nullable'):
                 rule = '.optional()'
                 break
               default:
+                rule = '.any()'
                 break
             }
             return rule
           })
           .join('')
-        return `   ${key}: schema${concatedRules},`
+        return `   ${key}: vine${concatedRules},`
       })
       .join('\n')
   }

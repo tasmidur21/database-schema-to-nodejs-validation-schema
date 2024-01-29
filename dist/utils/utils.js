@@ -53,8 +53,9 @@ exports.buildTemplateContent = buildTemplateContent;
 function storeFile(content, fileName, directory, extention = 'js') {
     const fullPath = path.join(process.cwd(), directory);
     if (!fs.existsSync(fullPath)) {
+        console.log("fullPath", fileName, fullPath);
         // If not, create the directory
-        fs.mkdirSync(fullPath);
+        fs.mkdirSync(fullPath, { recursive: true });
     }
     return fs.writeFileSync(`${fullPath}/${fileName}.${extention}`, content);
 }

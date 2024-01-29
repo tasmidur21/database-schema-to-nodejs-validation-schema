@@ -23,14 +23,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AdonisRequestSchemaGenerator = void 0;
+exports.VineRequestSchemaGenerator = void 0;
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const utils_1 = require("../utils/utils");
-const CLASS_NAME_SUFFIX = `{{className}}RequestValidator`;
-const basePath = `validators`;
-const templateSource = fs.readFileSync(path.resolve(__dirname, '../templates/adonis.template'), 'utf8');
-class AdonisRequestSchemaGenerator {
+const constants_1 = require("../utils/constants");
+const templateSource = fs.readFileSync(path.resolve(__dirname, '../templates/vine.template'), 'utf8');
+class VineRequestSchemaGenerator {
     constructor(templateSetting) {
         var _a;
         this.parse = (rules) => {
@@ -57,46 +56,52 @@ class AdonisRequestSchemaGenerator {
                         case _item.includes('bool'):
                             rule = '.boolean()';
                             break;
+                        case _item.includes('in'):
+                            const value = _item.split(':')[1].split(",").join(",");
+                            rule = `.enum([${value}])`;
+                            break;
                         case _item.includes('max'): {
                             const value = (_a = _item.split(':')[1]) !== null && _a !== void 0 ? _a : 1;
-                            rule = `.max(${value})`;
+                            rule = `.maxLength(${value})`;
                             break;
                         }
                         case _item.includes('min'): {
                             const value = (_b = _item.split(':')[1]) !== null && _b !== void 0 ? _b : 1;
-                            rule = `.min(${value})`;
+                            rule = `.minLength(${value})`;
                             break;
                         }
-                        case _item.includes('required'):
-                            rule = '.required()';
-                            break;
                         case _item.includes('nullable'):
                             rule = '.optional()';
                             break;
                         default:
+                            rule = '.any()';
                             break;
                     }
                     return rule;
                 })
                     .join('');
-                return `   ${key}: schema${concatedRules},`;
+                return `   ${key}: vine${concatedRules},`;
             })
                 .join('\n');
         };
         this.templateSetting = templateSetting;
-        this.storeDir = (_a = templateSetting === null || templateSetting === void 0 ? void 0 : templateSetting.stroreDir) !== null && _a !== void 0 ? _a : basePath;
-        this.className = (0, utils_1.getClassName)({
-            className: (0, utils_1.snakeToCamel)(this.templateSetting.fileName),
-        }, CLASS_NAME_SUFFIX);
+        this.storeDir = templateSetting === null || templateSetting === void 0 ? void 0 : templateSetting.stroreDir;
+        if ((_a = this.templateSetting) === null || _a === void 0 ? void 0 : _a.fileName) {
+            this.className = (0, utils_1.getClassName)({
+                className: (0, utils_1.snakeToCamel)(this.templateSetting.fileName),
+            }, constants_1.CLASS_NAME_SUFFIX);
+        }
     }
     buildAndStore() {
         const pasedRules = this.parse(this.templateSetting.rules);
-        const content = (0, utils_1.buildTemplateContent)(templateSource, {
-            CLASS_NAME: this.className,
-            RULES: pasedRules
-        });
-        (0, utils_1.storeFile)(content, this.className, this.storeDir, "ts");
+        if (this.storeDir && this.className) {
+            const content = (0, utils_1.buildTemplateContent)(templateSource, {
+                CLASS_NAME: this.className,
+                RULES: pasedRules,
+            });
+            (0, utils_1.storeFile)(content, this.className, this.storeDir);
+        }
         return pasedRules;
     }
 }
-exports.AdonisRequestSchemaGenerator = AdonisRequestSchemaGenerator;
+exports.VineRequestSchemaGenerator = VineRequestSchemaGenerator;
