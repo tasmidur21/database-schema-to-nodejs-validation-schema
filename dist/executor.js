@@ -90,7 +90,6 @@ class Executor {
             return true;
         });
     }
-    // Function to initialize a class based on the request validation type
     initializeSchemaOperation() {
         const SchemaOperationClass = constants_1.schemaOperationClass[this.databaseType];
         if (SchemaOperationClass) {

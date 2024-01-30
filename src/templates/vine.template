@@ -1,14 +1,10 @@
-//app/Validators/#__CLASS_NAME__#.ts
-import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
-import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import vine from '@vinejs/vine'
 
 export default class #__CLASS_NAME__# {
-  constructor (protected ctx: HttpContextContract) {
-  }
-
-  public schema = schema.create({
+  
+  public schema = vine.object(
       #__RULES__#
-  })
+  )
 
   public messages: CustomMessages = {}
 }

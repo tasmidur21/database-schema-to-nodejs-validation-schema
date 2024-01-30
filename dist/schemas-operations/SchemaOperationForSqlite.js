@@ -71,7 +71,7 @@ class SchemaOperationForSqlite {
                         if (dataType.includes('varchar'))
                             columnRules.push('max:' + parseInt(dataType.replace(/\D/g, ''), 10));
                         break;
-                    case dataType === 'integer':
+                    case dataType.includes('int'):
                         columnRules.push('integer');
                         columnRules.push('min:' + this.integerTypes.integer.min);
                         columnRules.push('max:' + this.integerTypes.integer.max);
@@ -82,9 +82,7 @@ class SchemaOperationForSqlite {
                         // Add more specific validation as needed
                         columnRules.push('numeric');
                         break;
-                    case dataType === 'date' ||
-                        dataType === 'time' ||
-                        dataType === 'datetime':
+                    case dataType.includes('date') || dataType === 'time':
                         columnRules.push('date');
                         break;
                     default:

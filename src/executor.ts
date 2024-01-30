@@ -19,7 +19,7 @@ export class Executor {
   private templateType: any;
   private requestFile: any;
 
-  constructor(table: string, databaseType?: string, options?: any) {
+  constructor(table: string, databaseType?: string, options?: any) {  
     this.table = table
     this.databaseType = databaseType ?? config.defaultDatabase
     this.databaseConfig = config.databases[this.databaseType]
@@ -56,7 +56,7 @@ export class Executor {
       }
 
       const rules = new RequestSchemaGenerator(templateSetting).initializeRequestSchemaGenerator();
-
+       
       console.log('\n')
       console.log(
         `🚀 Schema Base Validation rules for "${this.table}" table generated! 🚀`,
@@ -74,12 +74,10 @@ export class Executor {
     } catch (error: any) {
       console.error(error.message)
     } finally {
-
+    
     }
     return true;
   }
-
-  // Function to initialize a class based on the request validation type
   private initializeSchemaOperation(): InstanceType<ISchemaOperationClassMap[keyof ISchemaOperationClassMap]> {
     const SchemaOperationClass = schemaOperationClass[this.databaseType]  
     if (SchemaOperationClass) {

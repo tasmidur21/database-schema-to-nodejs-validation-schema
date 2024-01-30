@@ -32,7 +32,7 @@ export class JoiRequestSchemaGenerator implements IRequestSchemaGenerator {
     }
   }
   public buildAndStore(): any {
-    const pasedRules = this.parse(this.templateSetting.rules)
+    const pasedRules = `{ \n${this.parse(this.templateSetting.rules)} \n}`
     if (this.storeDir && this.className) {
       const content = buildTemplateContent(templateSource, {
         CLASS_NAME: this.className,
@@ -87,7 +87,7 @@ export class JoiRequestSchemaGenerator implements IRequestSchemaGenerator {
             return rule
           })
           .join('')
-        return `${key}: Joi${concatedRules},`
+        return `  ${key}: Joi${concatedRules},`
       })
       .join('\n')
   }

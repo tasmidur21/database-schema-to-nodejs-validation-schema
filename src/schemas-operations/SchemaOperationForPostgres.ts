@@ -103,7 +103,7 @@ export class SchemaOperationForPostgres {
             type.includes('real'):
             columnRules.push('numeric')
             break
-          case type === 'date' || type.includes('time '):
+          case type.includes('date') || type.includes('time'):
             columnRules.push('date')
             break
           case type.includes('json'):

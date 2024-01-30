@@ -131,7 +131,7 @@ class SchemaOperationForMysql {
                         columnRules.push('min:' + this.integerTypes.year.min);
                         columnRules.push('max:' + this.integerTypes.year.max);
                         break;
-                    case type === 'date' || type === 'time':
+                    case type.includes('date') || type === 'time':
                         columnRules.push('date');
                         break;
                     case type === 'timestamp':

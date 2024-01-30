@@ -1,29 +1,57 @@
 #!/usr/bin/env ts-node
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const commander_1 = require("commander");
 const executor_1 = require("./executor");
 const dotenv_1 = require("dotenv");
 const constants_1 = require("./utils/constants");
+// Load environment variables from a .env file if present
 (0, dotenv_1.config)();
+// Define the CLI program
 commander_1.program
     .version('1.0.0')
     .description('A simple CLI app for dynamic schema rules generation');
+// Define the 'schema:make-rules' command
 commander_1.program
     .command('schema:make-rules')
     .addOption(new commander_1.Option('-db, --database <database>', 'Specify the database').choices([constants_1.DATABASE_MYSQL, constants_1.DATABASE_POSTGRES, constants_1.DATABASE_SQLITE]))
     .option('-c, --columns <columns>', 'Specify the column name of the table')
     .addOption(new commander_1.Option('-rv, --request-validation [request-validation]', 'The request validation file type').choices([constants_1.REQUEST_VALIDATION_TYPE_JOI, constants_1.REQUEST_VALIDATION_TYPE_VALIDATORJS, constants_1.REQUEST_VALIDATION_TYPE_VINE]))
-    .option('-rf, --request-file <request-file>', 'Specify the request validator file name')
+    .option('-f, --request-file <request-file>', 'Specify the request validator file name')
     .requiredOption('-t, --table <table>', 'Specify the table name')
-    .action((cmd) => {
-    const { table, database, columns = "", requestValidation, requestFile } = cmd;
-    const options = {
-        columns: columns.split(',').filter(Boolean),
-        validationSchemaType: requestValidation,
-        requestFile
-    };
-    new executor_1.Executor(table, database, options).execute();
-    //process.exit()
+    .action((cmd) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { table, database, columns = "", requestValidation, requestFile } = cmd;
+        // Parse the options
+        const options = {
+            columns: columns.split(',').filter(Boolean),
+            validationSchemaType: requestValidation,
+            requestFile,
+        };
+        // Execute the main logic
+        yield new executor_1.Executor(table, database, options).execute();
+    }
+    catch (error) {
+        console.error(error.message);
+    }
+    finally {
+        process.exit();
+    }
+}));
+// Generate and print documentation for the options
+commander_1.program.on('--help', () => {
+    console.log('');
+    console.log('Examples:');
+    console.log('  $ ./your-script.ts schema:make-rules -t my_table -db mysql -c column1,column2 -rv joi -f Validation');
 });
+// Parse the command line arguments
 commander_1.program.parse(process.argv);

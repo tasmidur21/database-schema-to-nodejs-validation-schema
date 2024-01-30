@@ -78,7 +78,7 @@ class JoiRequestSchemaGenerator {
                     return rule;
                 })
                     .join('');
-                return `${key}: Joi${concatedRules},`;
+                return `  ${key}: Joi${concatedRules},`;
             })
                 .join('\n');
         };
@@ -91,7 +91,7 @@ class JoiRequestSchemaGenerator {
         }
     }
     buildAndStore() {
-        const pasedRules = this.parse(this.templateSetting.rules);
+        const pasedRules = `{ \n${this.parse(this.templateSetting.rules)} \n}`;
         if (this.storeDir && this.className) {
             const content = (0, utils_1.buildTemplateContent)(templateSource, {
                 CLASS_NAME: this.className,

@@ -82,9 +82,9 @@ export class SchemaOperationForMysql implements ISchemaOperation {
           ? this.selectedColumns.includes(Field)
           : !this.skipColumns.includes(Field)
       })
-    }
-
+    }  
     tableSchema.forEach(({ Field, Type, Null, Key, Default, Extra }) => {
+
       if (Extra === 'auto_increment') {
         return
       }
@@ -136,7 +136,7 @@ export class SchemaOperationForMysql implements ISchemaOperation {
           columnRules.push('min:' + this.integerTypes.year.min)
           columnRules.push('max:' + this.integerTypes.year.max)
           break
-        case type === 'date' || type === 'time':
+        case type.includes('date') || type === 'time':
           columnRules.push('date')
           break
         case type === 'timestamp':

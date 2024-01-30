@@ -33,7 +33,7 @@ export class VineRequestSchemaGenerator implements IRequestSchemaGenerator {
     }
   }
   public buildAndStore(): any {
-    const pasedRules = this.parse(this.templateSetting.rules)
+    const pasedRules = `{ \n${this.parse(this.templateSetting.rules)} \n}`
     if (this.storeDir && this.className) {
       const content = buildTemplateContent(templateSource, {
         CLASS_NAME: this.className,

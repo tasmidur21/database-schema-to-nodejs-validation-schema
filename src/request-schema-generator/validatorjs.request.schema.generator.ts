@@ -29,7 +29,7 @@ export class ValidatorJsRequestSchemaGenerator
     }
   }
   public buildAndStore(): any {
-    const pasedRules = JSON.stringify(this.templateSetting.rules,null,2)
+    const pasedRules = JSON.stringify(this.parse(this.templateSetting.rules),null,2)
     if (this.storeDir && this.className) {
       const content = buildTemplateContent(templateSource, {
         CLASS_NAME: this.className,
@@ -38,5 +38,20 @@ export class ValidatorJsRequestSchemaGenerator
       storeFile(content, this.className, this.storeDir)
     }
     return pasedRules;
+  }
+
+  private parse= (columnRules:any)=>{
+    return Object.entries(columnRules).reduce((result:any, [columnName, columnArray]:any) => {
+      const updatedColumnArray = columnArray.reduce((acc:any, item:any) => {
+        if (["nullable","required"].includes(item)) {
+          acc.unshift(item);
+        } else {
+          acc.push(item);
+        }
+        return acc;
+      }, []);
+      result[columnName] = updatedColumnArray;
+      return result;
+    }, {});
   }
 }

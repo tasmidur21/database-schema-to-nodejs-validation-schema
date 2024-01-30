@@ -32,6 +32,21 @@ const templateSource = fs.readFileSync(path.resolve(__dirname, '../templates/val
 class ValidatorJsRequestSchemaGenerator {
     constructor(templateSetting) {
         var _a;
+        this.parse = (columnRules) => {
+            return Object.entries(columnRules).reduce((result, [columnName, columnArray]) => {
+                const updatedColumnArray = columnArray.reduce((acc, item) => {
+                    if (["nullable", "required"].includes(item)) {
+                        acc.unshift(item);
+                    }
+                    else {
+                        acc.push(item);
+                    }
+                    return acc;
+                }, []);
+                result[columnName] = updatedColumnArray;
+                return result;
+            }, {});
+        };
         this.templateSetting = templateSetting;
         this.storeDir = templateSetting === null || templateSetting === void 0 ? void 0 : templateSetting.stroreDir;
         if ((_a = this.templateSetting) === null || _a === void 0 ? void 0 : _a.fileName) {
@@ -41,7 +56,7 @@ class ValidatorJsRequestSchemaGenerator {
         }
     }
     buildAndStore() {
-        const pasedRules = JSON.stringify(this.templateSetting.rules, null, 2);
+        const pasedRules = JSON.stringify(this.parse(this.templateSetting.rules), null, 2);
         if (this.storeDir && this.className) {
             const content = (0, utils_1.buildTemplateContent)(templateSource, {
                 CLASS_NAME: this.className,
