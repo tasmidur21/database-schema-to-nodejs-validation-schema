@@ -27,6 +27,21 @@ exports.config = void 0;
 const dotenv_1 = require("dotenv");
 const path = __importStar(require("path"));
 const validation_1 = require("../utils/validation");
+const fs = __importStar(require("fs"));
+const messages_1 = require("../utils/messages");
+const configFilePath = path.join(process.cwd(), '/.schema-config.js');
+let config = {};
+exports.config = config;
 (0, dotenv_1.config)();
-const schemaConfig = require(path.join(process.cwd(), '/schema.config.js'));
-exports.config = (0, validation_1.validateConfig)(schemaConfig);
+if (fs.existsSync(configFilePath)) {
+    const schemaConfig = require(configFilePath);
+    exports.config = config = (0, validation_1.validateConfig)(schemaConfig);
+}
+else {
+    if (process.argv.includes("init")) {
+        console.error((0, messages_1.successMessage)(`\n".schema-config.js" is generated on working directory. You need to modify\n`));
+    }
+    else {
+        console.error((0, messages_1.warningMessage)(`\n".schema-config.js" is missing. \n Please run command "nodeSchema init" for global installtion otherwise "npm run nodeSchema init" \n`));
+    }
+}

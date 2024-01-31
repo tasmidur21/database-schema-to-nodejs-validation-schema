@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.storeFile = exports.buildTemplateContent = exports.getClassName = exports.snakeToCamel = exports.arrayIntersection = void 0;
+exports.initSchema = exports.storeFile = exports.buildTemplateContent = exports.getClassName = exports.snakeToCamel = exports.arrayIntersection = void 0;
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 function arrayIntersection(arr1, arr2) {
@@ -53,10 +53,14 @@ exports.buildTemplateContent = buildTemplateContent;
 function storeFile(content, fileName, directory, extention = 'js') {
     const fullPath = path.join(process.cwd(), directory);
     if (!fs.existsSync(fullPath)) {
-        console.log("fullPath", fileName, fullPath);
         // If not, create the directory
         fs.mkdirSync(fullPath, { recursive: true });
     }
     return fs.writeFileSync(`${fullPath}/${fileName}.${extention}`, content);
 }
 exports.storeFile = storeFile;
+function initSchema() {
+    const templateSource = fs.readFileSync(path.resolve(__dirname, '../templates/schema.config.template'), 'utf8');
+    storeFile(templateSource, ".schema-config", "/");
+}
+exports.initSchema = initSchema;

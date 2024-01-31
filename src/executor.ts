@@ -27,7 +27,7 @@ export class Executor {
     this.skipColumns = config.skipColumns;
     this.templateType = this.options?.validationSchemaType ?? config.validationSchemaType;
     this.requestFile = this.table;
-    this.stroreDir = config.requestValidatorPath;
+    this.stroreDir = config?.requestValidatorPath??null;
 
     if (this.options?.requestFile) {
       const filePath = this.options?.requestFile;
@@ -52,14 +52,14 @@ export class Executor {
         fileName: this.requestFile,
         rules: columnRules,
         templateType: this.templateType,
-        stroreDir: this.stroreDir,
+        stroreDir: null //this.stroreDir,
       }
 
       const rules = new RequestSchemaGenerator(templateSetting).initializeRequestSchemaGenerator();
        
       console.log('\n')
       console.log(
-        `🚀 Schema Base Validation rules for "${this.table}" table generated! 🚀`,
+        `🚀 Schema Base Validation rules for "${this.templateType}" generated! 🚀`,
       )
       console.log(
         `Copy and paste these rules into your validation location, such as controller, form request, or any applicable place 😊`,

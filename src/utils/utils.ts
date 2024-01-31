@@ -29,11 +29,17 @@ export const buildTemplateContent = (template: string, replacements: any) => {
 
 export function storeFile(content: any, fileName: any, directory: string,extention:any='js') {
   const fullPath = path.join(process.cwd(), directory)
-  if (!fs.existsSync(fullPath)) {
-    console.log("fullPath",fileName,fullPath);
-    
+  if (!fs.existsSync(fullPath)) { 
     // If not, create the directory
     fs.mkdirSync(fullPath,{recursive: true})
   }
   return fs.writeFileSync(`${fullPath}/${fileName}.${extention}`, content)
+}
+
+export function initSchema(){
+  const templateSource = fs.readFileSync(
+    path.resolve(__dirname, '../templates/schema.config.template'),
+    'utf8',
+  )
+  storeFile(templateSource, ".schema-config","/")
 }

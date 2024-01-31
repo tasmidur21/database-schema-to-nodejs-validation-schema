@@ -40,7 +40,7 @@ const messages_1 = require("./utils/messages");
 const path = __importStar(require("path"));
 class Executor {
     constructor(table, databaseType, options) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e, _f, _g;
         this.skipColumns = [];
         this.selectedColumns = [];
         this.table = table;
@@ -50,16 +50,16 @@ class Executor {
         this.skipColumns = config_1.config.skipColumns;
         this.templateType = (_b = (_a = this.options) === null || _a === void 0 ? void 0 : _a.validationSchemaType) !== null && _b !== void 0 ? _b : config_1.config.validationSchemaType;
         this.requestFile = this.table;
-        this.stroreDir = config_1.config.requestValidatorPath;
-        if ((_c = this.options) === null || _c === void 0 ? void 0 : _c.requestFile) {
-            const filePath = (_d = this.options) === null || _d === void 0 ? void 0 : _d.requestFile;
+        this.stroreDir = (_c = config_1.config === null || config_1.config === void 0 ? void 0 : config_1.config.requestValidatorPath) !== null && _c !== void 0 ? _c : null;
+        if ((_d = this.options) === null || _d === void 0 ? void 0 : _d.requestFile) {
+            const filePath = (_e = this.options) === null || _e === void 0 ? void 0 : _e.requestFile;
             this.requestFile = path.basename(filePath);
             this.stroreDir = path.dirname(filePath);
         }
         if (this.options &&
-            ((_e = this.options) === null || _e === void 0 ? void 0 : _e.columns) &&
+            ((_f = this.options) === null || _f === void 0 ? void 0 : _f.columns) &&
             this.options.columns.length > 0) {
-            this.selectedColumns = (_f = this.options) === null || _f === void 0 ? void 0 : _f.columns;
+            this.selectedColumns = (_g = this.options) === null || _g === void 0 ? void 0 : _g.columns;
             this.skipColumns = this.skipColumns.filter((skipColumn) => { var _a; return !((_a = this.options) === null || _a === void 0 ? void 0 : _a.columns.includes(skipColumn)); });
         }
     }
@@ -71,11 +71,11 @@ class Executor {
                     fileName: this.requestFile,
                     rules: columnRules,
                     templateType: this.templateType,
-                    stroreDir: this.stroreDir,
+                    stroreDir: null //this.stroreDir,
                 };
                 const rules = new request_schema_generator_1.RequestSchemaGenerator(templateSetting).initializeRequestSchemaGenerator();
                 console.log('\n');
-                console.log(`🚀 Schema Base Validation rules for "${this.table}" table generated! 🚀`);
+                console.log(`🚀 Schema Base Validation rules for "${this.templateType}" generated! 🚀`);
                 console.log(`Copy and paste these rules into your validation location, such as controller, form request, or any applicable place 😊`);
                 console.log('______________________________________________________________________________________________________________________');
                 console.log('\n');
