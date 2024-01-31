@@ -164,6 +164,20 @@ Validation rules may vary based on the selected driver due to differences in sup
 npm run test
 ```
 
+👤 **Md Tasmidur Rahman**
+
+* Linkedin: [@tasmidur](https://www.linkedin.com/in/tasmidur/)
+* Github: [@tasmidur](https://github.com/tasmidur)
+* Medium: [@tasmidur](https://medium.com/@tasmidur)
+
+## 🤝 Contributing
+
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/tasmidur21/nodejs-validation-schema-rules/issues)
+
+## Show your support
+
+Give a ⭐️ if this project helped you!
+
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
