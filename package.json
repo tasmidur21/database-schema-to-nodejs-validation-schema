@@ -1,6 +1,6 @@
 {
   "name": "@tasmidur/nodejs-validation-schema-rules",
-  "version": "1.0.6",
+  "version": "1.0.0",
   "description": "Automatically generate initial Node.js validation schema rules from your database table schema. Use them as a foundation for refining and optimizing your validation rules as required",
   "bin": {
     "nodeSchema": "dist/cli.js"
@@ -37,10 +37,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "chalk": "^5.3.0",
     "commander": "^11.1.0",
-    "handlebars": "^4.7.8",
-    "joi": "^17.4.0",
     "mysql2": "^3.7.0",
     "pg": "^8.7.1",
     "sqlite3": "^5.1.7"

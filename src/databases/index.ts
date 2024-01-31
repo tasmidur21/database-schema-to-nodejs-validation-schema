@@ -1,6 +1,6 @@
-import { ConnectionConfig as MySQLConnectionConfig} from 'mysql2/promise';
+import { ConnectionConfig as MySQLConnectionConfig } from 'mysql2/promise';
 import { IDatabaseBaseClassMap, IDatabaseConfig } from "../contacts/Database";
-import { databaseClassMap, schemaOperationClass } from "../utils/constants";
+import { databaseClassMap } from "../utils/constants";
 import { ClientConfig as PostgresClientConfig } from 'pg';
 
 export class Database{

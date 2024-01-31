@@ -1,8 +1,6 @@
 import {
   createPool,
-  Pool,
-  PoolConnection,
-  ConnectionConfig,
+  Pool, ConnectionConfig
 } from 'mysql2/promise'
 import { IDatabase } from '../contacts/Database'
 import { errorMessage } from '../utils/messages'

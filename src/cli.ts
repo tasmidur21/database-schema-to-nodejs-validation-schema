@@ -11,9 +11,7 @@ import {
   REQUEST_VALIDATION_TYPE_JOI,
   REQUEST_VALIDATION_TYPE_VALIDATORJS,
 } from './utils/constants';
-import * as fs from 'fs'
-import * as path from 'path'
-import { storeFile,initSchema } from './utils/utils';
+import { initSchema } from './utils/utils';
 
 // Load environment variables from a .env file if present
 dotenvConfig();
